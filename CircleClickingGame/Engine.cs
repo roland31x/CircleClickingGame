@@ -57,8 +57,8 @@ namespace CircleClickingGame
 
             Ellipse circle = new Ellipse()
             {
-                Height = CS*4,
-                Width = CS*4,
+                Height = CS*6,
+                Width = CS*6,
                 Stroke = new SolidColorBrush(Colors.Blue),
                 StrokeThickness = 2,
                 Opacity = 0
@@ -76,12 +76,13 @@ namespace CircleClickingGame
                 Canvas.SetTop(circle, y - circle.Height/2);
                 
                 Canvas.SetLeft(circle, x - circle.Width/2);
-                circle.Opacity = Math.Pow((circle.Width - CS) / 3 * CS , 4) ;
+                circle.Opacity = (6*CS - circle.Width) / (4 * CS);
+                //MessageBox.Show(circle.Opacity.ToString());
                 circle.Height -= 1;
                 circle.Width -= 1;
                 await Task.Delay(1);
             }
-
+            MainWindow.PlayArea.Children.Remove(circle);
             if (circ.isAlive)
             {
                 for(int i = 0; i < 25; i++)
@@ -100,7 +101,7 @@ namespace CircleClickingGame
                 //MessageBox.Show("miss");
             }
             circ.isAlive = false;
-            MainWindow.PlayArea.Children.Remove(circle);
+            
             MainWindow.PlayArea.Children.Remove(MainCircle);
             MainCircle = null;
             circle = null;
@@ -134,11 +135,11 @@ namespace CircleClickingGame
             {
                 if(check.ApproachCircle.Width - check.parent.Width > 100)
                 {
-                    //MessageBox.Show("100");
                     //ShakeAnimation() - todo
                     return;
                 }
-                Engine.MainWindow.label1.Content = ID.ToString();
+                //Engine.MainWindow.label1.Content = ID.ToString();
+                
                 check.isAlive = false;
             }
         }
