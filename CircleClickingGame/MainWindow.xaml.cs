@@ -31,7 +31,7 @@ namespace CircleClickingGame
 
         private async void Button_Click(object sender, RoutedEventArgs e)
         {
-            test1++;
+            //test1++;
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.InitialDirectory = "c:\\";
@@ -55,6 +55,7 @@ namespace CircleClickingGame
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             Engine.Run();
+            //Engine.SpawnCircle(400, 400, test1++);
         }
     }
 }
