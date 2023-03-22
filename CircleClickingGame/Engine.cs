@@ -12,36 +12,67 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Path = System.Windows.Shapes.Path;
 
 namespace CircleClickingGame
 {
     static class Engine
     {
-        public static string MapPath;
+        public static MainWindow MainWindow;       
         public static Random rng;
-        public static string MapName;
-        public static DispatcherTimer Timer;
-        public static List<ClickableCircle> Circles;
-        public static MainWindow MainWindow;
+        
+        public static DispatcherTimer Timer; // wip
+        //public static List<ClickableCircle> Circles;        
         public static List<HitObjectEvent> HitObjects;
-        public static Stopwatch Stopwatch = new Stopwatch();
-        public static int CS = 109 - (9 * 5);
-        public static int AR = 8;
-        public static int Preempt;
-        public static int FadeIn;
-        public static int HitWindow;
-        public static int OD = 5;
-        public static int HP = 8;
+        
+        
+        
+        public static Stopwatch Stopwatch;
+        public static MediaPlayer MediaPlayer;
+        public static string MapPath;
+        public static string MapName;
+
+
+
+        public static double CS;
+        public static double CircSize = 5;
+        public static double AR = 8;
+        public static double Preempt;
+        public static double FadeIn;
+        public static double HitWindow;
+        public static double OD = 5;
+        public static double HP = 8;
+
+
+        public static bool isPaused;
+        public static bool Abort;
+
+        public static PlayerStats player;
+
         public static void Init(MainWindow m)
         {
+            Abort = false;
+            isPaused = false;
             MainWindow = m;
             rng = new Random();
-            Circles = new List<ClickableCircle>();
+            ClickableCircle.Circles = new Dictionary<int, ClickableCircle>();
             Timer = new DispatcherTimer();
             HitObjects = new List<HitObjectEvent>();
             Timer.Tick += Timer_Tick;
-            Timer.Interval = new TimeSpan(0,0,0,0,milliseconds: 1);
+            Stopwatch = new Stopwatch();
+            Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
             m.PlayArea.Background = new SolidColorBrush(Colors.Black);
+            m.PauseButton.IsEnabled = false;
+            MediaPlayer = new MediaPlayer();
+            if (Engine.MapPath == null || Engine.MapPath == string.Empty)
+            {
+                m.SongButton.IsEnabled = false;
+            }
+            player = new PlayerStats(HitObjects.Count);
+        }
+        public static void StatsUpdate()
+        {
+            MainWindow.StatsLabel.Content = $"CS : {CircSize} {Environment.NewLine}AR : {AR} {Environment.NewLine}OD : {OD} {Environment.NewLine}Circles: {HitObjects.Count}";
         }
 
         private static void Timer_Tick(object? sender, EventArgs e)
@@ -129,6 +160,15 @@ namespace CircleClickingGame
             circ = null;
 
         }
+        async public static void SpawnSlider(HitObjectEvent HitObj, int ID)
+        {
+            SpawnCircle((int)HitObj.coords.X, (int)HitObj.coords.Y, ID);
+            //DrawSlider(HitObj.coords,HitObj.Props);
+        }
+        async public static void DrawSlider(Point start, string[] props)
+        {
+              
+        }
 
         private static void Circle_ClickCheck(object sender, MouseButtonEventArgs e)
         {
@@ -140,7 +180,11 @@ namespace CircleClickingGame
             Stopwatch.Start();
             while(j < HitObjects.Count)
             {
-                if (Stopwatch.ElapsedMilliseconds + HitObjects[0].Time - 500 >= HitObjects[j].Time)
+                if (Engine.Abort)
+                {
+                    break;
+                }
+                if (Stopwatch.ElapsedMilliseconds >= HitObjects[j].Time)
                 {
                     if ((HitObjects[j].Type & 1 ) > 0)
                     {
@@ -148,15 +192,17 @@ namespace CircleClickingGame
                     }
                     else if((HitObjects[j].Type & 2) > 0)
                     {
-                        //SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
+                        SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
                     }
                     j++;
                 }
                 else await Task.Delay(1);
             }
+            MainWindow.PauseButton.IsEnabled = false;          
         }
         public static void LoadMap()
         {
+            Engine.Init(Engine.MainWindow);
             if(MapPath == null || MapPath == string.Empty)
             {
                 return;
@@ -166,6 +212,13 @@ namespace CircleClickingGame
             while (!sr.EndOfStream)
             {
                 string line = sr.ReadLine();
+                if(line == "[Difficulty]")
+                {
+                    HP = double.Parse(sr.ReadLine().Split(':').Last());
+                    CircSize = double.Parse(sr.ReadLine().Split(':').Last());
+                    OD = double.Parse(sr.ReadLine().Split(':').Last());
+                    AR = double.Parse(sr.ReadLine().Split(':').Last());
+                }
                 if(!begin && line == "[HitObjects]")
                 {
                     begin = true;
@@ -191,6 +244,10 @@ namespace CircleClickingGame
             Preempt = 1250 - 750 * ((AR - 5) / 5);
             FadeIn = 800 - 500 * ((AR - 5) / 5);
             HitWindow = 140 - 8 * OD;
+            CS = 109 - (9 * CircSize);
+            Abort = true;
+            player = new PlayerStats(HitObjects.Count);
+            StatsUpdate();
         }
     }
     class ClickableCircle
@@ -225,6 +282,24 @@ namespace CircleClickingGame
                     //ShakeAnimation() - todo
                 }
             }
+        }
+    }
+    class PlayerStats
+    {
+        public double HP { get; set; }
+        public int Score { get; set; }
+        public int Combo { get; set; }
+        public int ObjectsHit300 { get; set; }
+        public int Accuracy { get; set; }
+        public int TotalObj { get; set; }
+        public PlayerStats(int TotalObj)
+        {
+            HP = 100;
+            Score = 0;
+            Combo = 0;
+            ObjectsHit300 = 0;
+            Accuracy = 100;
+            this.TotalObj = TotalObj;
         }
     }
     class HitObjectEvent

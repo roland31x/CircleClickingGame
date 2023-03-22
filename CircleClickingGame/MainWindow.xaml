@@ -8,7 +8,7 @@
         ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="720" Width="1280">
-    <Canvas>
+    <Canvas Background="Black">
 
 
         <Canvas x:Name="PlayArea" Height="480" Width="640" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Left="320" Canvas.Top="112">
@@ -16,8 +16,11 @@
 
             <Grid/>
         </Canvas>
-        <Button Content="SELECT BEATMAP" Click="Button_Click" HorizontalAlignment="Left" Canvas.Left="515" Canvas.Top="69" VerticalAlignment="Top"/>
-        <Button Content="START" Canvas.Left="744" Canvas.Top="74" Click="Button_Click_1" HorizontalAlignment="Left" VerticalAlignment="Top"/>
-        <Label x:Name="label1" Content="Label" HorizontalAlignment="Left" Canvas.Left="840" Canvas.Top="69" VerticalAlignment="Top"/>
+        <Button Content="SELECT BEATMAP" Click="BeatMap_Click" HorizontalAlignment="Center" Canvas.Left="1022" Canvas.Top="112" VerticalAlignment="Top" Background="#FF00FF0B" FontFamily="Broadway" Height="61" Width="222" FontSize="20"/>
+        <Button x:Name="StartButton" Content="START" Canvas.Left="1056" Canvas.Top="315" Click="Button_Click_1" HorizontalAlignment="Center" VerticalAlignment="Top" Background="#FF5C0000" FontFamily="Elephant" Foreground="White" Height="57" Width="154" FontSize="24"/>
+        <Label x:Name="label1" Content="No beatmap loaded" HorizontalAlignment="Left" Canvas.Left="176" Canvas.Top="10" VerticalAlignment="Center" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="928"/>
+        <Button x:Name="PauseButton" Content="STOP" Canvas.Left="1046" Canvas.Top="549" Height="43" Width="174" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Red" Foreground="White" FontFamily="Elephant" FontSize="24" Click="Button_Click_2"/>
+        <Button x:Name="SongButton" Content="SELECT AUDIO FILE" Click="Song_Click" Canvas.Left="1022" Canvas.Top="178" Background="#FF00D1FF" FontFamily="Broadway" Height="23" Width="222" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label x:Name="StatsLabel" Content="No stats available" Canvas.Left="33" Canvas.Top="160" Height="452" Width="233" Foreground="White" FontSize="24" FontFamily="Gill Sans MT"/>
     </Canvas>
 </Window>
