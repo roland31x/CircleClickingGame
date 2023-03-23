@@ -23,15 +23,17 @@ namespace CircleClickingGame
     /// </summary>
     public partial class MainWindow : Window
     {
-        //int test1 = 0;
         public MainWindow()
         {
             InitializeComponent();
-            Engine.Init(this);
+            StartButton.IsEnabled = false;
+            PauseButton.IsEnabled = false;
+            Engine.MainInit(this);
         }
 
         private async void BeatMap_Click(object sender, RoutedEventArgs e)
         {
+            Engine.Default();
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
             openFileDialog.InitialDirectory = "c:\\";
@@ -41,36 +43,20 @@ namespace CircleClickingGame
             openFileDialog.ShowDialog();
             Engine.MapPath = openFileDialog.FileName;
             Engine.MapName = openFileDialog.FileName.Split(@"\").Last().Split('.').First();
-            label1.Content = Engine.MapName;
-            Engine.LoadMap();
-            //for(int i = 0; i < 50; i++)
-            //{
-            //    int x = Engine.rng.Next(100, (int)Width - 100);
-            //    int y = Engine.rng.Next(100, (int)Height - 100);
-            //    Engine.SpawnCircle(x,y,i);
-            //    await Task.Delay(400);
-            //}
-            StartButton.IsEnabled = true;
-            PauseButton.IsEnabled = false;
-            Engine.isPaused = false;
-            PauseButton.Content = "STOP";
-            SongButton.IsEnabled = true;
-        }
-        private void Song_Click(object sender, RoutedEventArgs e)
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = Engine.MapPath;
-            openFileDialog.Filter = "mp3 files (*.mp3)|*.mp3";
-            openFileDialog.FilterIndex = 2;
-            openFileDialog.RestoreDirectory = true;
-            openFileDialog.ShowDialog();
-            if(openFileDialog.FileName != null && openFileDialog.FileName != string.Empty)
+            if (Engine.LoadMap())
             {
-                Engine.MediaPlayer.Open(new Uri(openFileDialog.FileName));
+                StartButton.IsEnabled = true;
+                PauseButton.IsEnabled = false;
+                PauseButton.Content = "STOP";
+                Engine.Abort = false;
+            }
+            else
+            {
+                StartButton.IsEnabled = false;
+                PauseButton.IsEnabled = false;
+                Engine.UpdatePlayerLabel(true);
             }
             
-         
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)

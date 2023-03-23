@@ -30,21 +30,23 @@ namespace CircleClickingGame
         
         public static Stopwatch Stopwatch;
         public static MediaPlayer MediaPlayer;
+
         public static string MapPath;
         public static string MapName;
+        public static string MapAudio;
 
 
 
         public static double CS;
-        public static double CircSize = 5;
-        public static double AR = 8;
+        public static double CircSize;
+        public static double AR;
         public static double Preempt;
         public static double FadeIn;
         public static double HitWindow300;
         public static double HitWindow100;
         public static double HitWindow50;
-        public static double OD = 5;
-        public static double HP = 8;
+        public static double OD;
+        public static double HP;
         public static double FadeOutTime = 300;
 
 
@@ -53,11 +55,14 @@ namespace CircleClickingGame
 
         public static PlayerStats player;
 
-        public static void Init(MainWindow m)
+        public static void MainInit(MainWindow m)
+        {           
+            MainWindow = m;                 
+        }
+        public static void Default()
         {
-            Abort = false;
+            Abort = true;
             isPaused = false;
-            MainWindow = m;
             rng = new Random();
             ClickableCircle.Circles = new Dictionary<int, ClickableCircle>();
             //Timer = new DispatcherTimer();
@@ -65,19 +70,27 @@ namespace CircleClickingGame
             //Timer.Tick += Timer_Tick;
             Stopwatch = new Stopwatch();
             //Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
-            m.PlayArea.Background = new SolidColorBrush(Colors.Black);
-            m.PauseButton.IsEnabled = false;
+            MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
+            MainWindow.PauseButton.IsEnabled = false;
             MediaPlayer = new MediaPlayer();
-            if (Engine.MapPath == null || Engine.MapPath == string.Empty)
-            {
-                m.SongButton.IsEnabled = false;
-            }
             player = new PlayerStats(HitObjects.Count);
-            
+            MapPath = string.Empty;
+            MapName = "No Beatmap Loaded";
+            MapAudio = string.Empty;
+            StatsUpdate(false);
+            UpdatePlayerLabel(true);
+
         }
-        public static void StatsUpdate()
+        public static void StatsUpdate(bool OK)
         {
-            MainWindow.StatsLabel.Content = $"CS : {CircSize} {Environment.NewLine}AR : {AR} {Environment.NewLine}OD : {OD} {Environment.NewLine}Circles: {HitObjects.Count}";
+            if (OK)
+            {
+                MainWindow.StatsLabel.Content = $"CS : {CircSize} {Environment.NewLine}AR : {AR} {Environment.NewLine}OD : {OD} {Environment.NewLine}Circles: {HitObjects.Count}";
+            }
+            else
+            {
+                MainWindow.StatsLabel.Content = "No stats available";
+            }
         }
 
         private static void Timer_Tick(object? sender, EventArgs e)
@@ -189,7 +202,7 @@ namespace CircleClickingGame
 
             //DrawResult(circ);
             
-            UpdatePlayerLabel();
+            UpdatePlayerLabel(false);
             //ClickableCircle.Circles.Remove(circ.ID);
             approach = null;
         }
@@ -228,12 +241,20 @@ namespace CircleClickingGame
                 _ => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png"))
             };
         }
-        public static void UpdatePlayerLabel()
+        public static void UpdatePlayerLabel(bool Hide)
         {
-            MainWindow.ScoreLabel.Content = player.Score.ToString();
-            MainWindow.AccuracyLabel.Content = Math.Round(player.Accuracy * 100,2).ToString() + "%";
-            MainWindow.ComboLabel.Content = player.Combo.ToString() + "x";
-
+            if (Hide)
+            {
+                MainWindow.ScoreLabel.Content = string.Empty;
+                MainWindow.AccuracyLabel.Content = string.Empty;
+                MainWindow.ComboLabel.Content = string.Empty;
+            }
+            else
+            {
+                MainWindow.ScoreLabel.Content = player.Score.ToString();
+                MainWindow.AccuracyLabel.Content = Math.Round(player.Accuracy * 100, 2).ToString() + "%";
+                MainWindow.ComboLabel.Content = player.Combo.ToString() + "x";
+            }            
         }
         async public static void SpawnSlider(HitObjectEvent HitObj, int ID)
         {
@@ -253,10 +274,12 @@ namespace CircleClickingGame
         {
             int j = 0;
             Stopwatch.Start();
+            MediaPlayer.Position = new TimeSpan(0, 0, 0, 0, HitObjects[0].Time - 500);
             while(j < HitObjects.Count)
             {
                 if (Abort)
                 {
+                    MessageBox.Show("Aborted past beatmap.");
                     break;
                 }
                 if (Stopwatch.ElapsedMilliseconds + HitObjects[0].Time - 500 >= HitObjects[j].Time)
@@ -273,60 +296,84 @@ namespace CircleClickingGame
                 }
                 else await Task.Delay(1);
             }
+            Stopwatch.Stop();
             MainWindow.PauseButton.IsEnabled = false;          
         }
-        public static void LoadMap()
+        public static bool LoadMap()
         {
-            Init(MainWindow);
-            if(MapPath == null || MapPath == string.Empty)
+            try
             {
-                return;
-            }
-            Abort = true;
-            StreamReader sr = new StreamReader(MapPath);
-            bool begin = false;
-            while (!sr.EndOfStream)
-            {
-                string line = sr.ReadLine();
-                if(line == "[Difficulty]")
+                if (MapPath == null || MapPath == string.Empty)
                 {
-                    HP = double.Parse(sr.ReadLine().Split(':').Last());
-                    CircSize = double.Parse(sr.ReadLine().Split(':').Last());
-                    OD = double.Parse(sr.ReadLine().Split(':').Last());
-                    AR = double.Parse(sr.ReadLine().Split(':').Last());
+                    MainWindow.label1.Content = "No beatmap loaded";
+                    return false;
                 }
-                if(!begin && line == "[HitObjects]")
+                MainWindow.label1.Content = MapName;
+                StreamReader sr = new StreamReader(MapPath);
+                bool begin = false;
+                while (!sr.EndOfStream)
                 {
-                    begin = true;
-                    continue;
-                }
-                if (begin)
-                {
-                    string[] properties = line.Split(',');
-                    int x = int.Parse(properties[0]);
-                    int y = int.Parse(properties[1]);
-                    int time = int.Parse(properties[2]);
-                    int type = int.Parse(properties[3]);
-                    string[] pars = new string[3];
-                    if((type & 2) > 0)
+                    string line = sr.ReadLine();
+                    if (line.Contains("AudioFilename:"))
                     {
-                        pars[0] = properties[5]; // curvee
-                        pars[1] = properties[6]; // slides 
-                        pars[2] = properties[7]; // length
+                        string name = line.Split(':')[1].Trim();
+                        MapAudio = MapPath.Replace(MapPath.Split(@"\").Last(), name);
+                        if (File.Exists(MapAudio))
+                        {
+                            MediaPlayer.Open(new Uri(MapAudio));
+                            MessageBox.Show("Map audio loaded!");
+                        }
+                        else
+                        {
+                            MessageBox.Show("Map audio not found!");
+                        }
                     }
-                    HitObjects.Add(new HitObjectEvent(x, y, time,type,pars));
+                    if (line == "[Difficulty]")
+                    {
+                        HP = double.Parse(sr.ReadLine().Split(':').Last());
+                        CircSize = double.Parse(sr.ReadLine().Split(':').Last());
+                        OD = double.Parse(sr.ReadLine().Split(':').Last());
+                        AR = double.Parse(sr.ReadLine().Split(':').Last());
+                    }
+                    if (!begin && line == "[HitObjects]")
+                    {
+                        begin = true;
+                        continue;
+                    }
+                    if (begin)
+                    {
+                        string[] properties = line.Split(',');
+                        int x = int.Parse(properties[0]);
+                        int y = int.Parse(properties[1]);
+                        int time = int.Parse(properties[2]);
+                        int type = int.Parse(properties[3]);
+                        string[] pars = new string[3];
+                        if ((type & 2) > 0)
+                        {
+                            pars[0] = properties[5]; // curvee
+                            pars[1] = properties[6]; // slides 
+                            pars[2] = properties[7]; // length
+                        }
+                        HitObjects.Add(new HitObjectEvent(x, y, time, type, pars));
+                    }
                 }
-            }
-            Preempt = 1250 - 750 * ((AR - 5) / 5);
-            FadeIn = 800 - 500 * ((AR - 5) / 5);
-            HitWindow300 = -6 * (OD - 13.75);
-            HitWindow100 = -8 * (OD - 17.4375);
-            HitWindow50 = -10 * (OD - 19.95);
+                Preempt = 1250 - 750 * ((AR - 5) / 5);
+                FadeIn = 800 - 500 * ((AR - 5) / 5);
+                HitWindow300 = -6 * (OD - 13.75);
+                HitWindow100 = -8 * (OD - 17.4375);
+                HitWindow50 = -10 * (OD - 19.95);
 
-            CS = 109 - (9 * CircSize);
-            //Abort = false;
-            player = new PlayerStats(HitObjects.Count);
-            StatsUpdate();
+                CS = 109 - (9 * CircSize);
+                //Abort = false;
+                player = new PlayerStats(HitObjects.Count);
+                StatsUpdate(true);
+                return true;
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Failed to load map.");
+                return false;
+            }
         }
     }
     class ClickableCircle
