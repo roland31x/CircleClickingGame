@@ -76,7 +76,9 @@ namespace CircleClickingGame
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             Engine.Abort = false;
+
             Engine.MediaPlayer.Play();
+
             Engine.Run();
             (sender as Button).IsEnabled = false;
             PauseButton.IsEnabled = true;
@@ -88,6 +90,7 @@ namespace CircleClickingGame
             if (Engine.isPaused)
             {
                 Engine.MediaPlayer.Play();
+
                 Engine.Stopwatch.Start();
                 Engine.isPaused = false;
                 (sender as Button).Content = "STOP";
@@ -95,6 +98,7 @@ namespace CircleClickingGame
             else
             {
                 Engine.MediaPlayer.Pause();
+
                 Engine.Stopwatch.Stop();
                 Engine.isPaused = true;
                 (sender as Button).Content = "RESUME";

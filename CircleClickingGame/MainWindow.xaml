@@ -22,5 +22,8 @@
         <Button x:Name="PauseButton" Content="STOP" Canvas.Left="1046" Canvas.Top="549" Height="43" Width="174" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Red" Foreground="White" FontFamily="Elephant" FontSize="24" Click="Button_Click_2"/>
         <Button x:Name="SongButton" Content="SELECT AUDIO FILE" Click="Song_Click" Canvas.Left="1022" Canvas.Top="178" Background="#FF00D1FF" FontFamily="Broadway" Height="23" Width="222" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Label x:Name="StatsLabel" Content="No stats available" Canvas.Left="33" Canvas.Top="160" Height="452" Width="233" Foreground="White" FontSize="24" FontFamily="Gill Sans MT"/>
+        <Label x:Name="ComboLabel" Content="" Canvas.Left="320" Canvas.Top="597" Height="61" Width="304" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="36" VerticalContentAlignment="Center"/>
+        <Label x:Name="AccuracyLabel" Content="" Canvas.Left="656" Canvas.Top="597" Height="61" Width="304" Foreground="White" FontSize="36" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Label x:Name="ScoreLabel" Content="" Canvas.Left="320" Canvas.Top="46" Height="61" Width="640" Foreground="White" FontSize="36" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"/>
     </Canvas>
 </Window>

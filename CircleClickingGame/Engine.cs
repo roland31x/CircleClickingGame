@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Path = System.Windows.Shapes.Path;
@@ -69,6 +70,7 @@ namespace CircleClickingGame
                 m.SongButton.IsEnabled = false;
             }
             player = new PlayerStats(HitObjects.Count);
+            
         }
         public static void StatsUpdate()
         {
@@ -146,18 +148,78 @@ namespace CircleClickingGame
                 }               
             }
             approach.Stop();
-            approach = null;
             if (circ.isAlive)
             {
+                Engine.player.Miss();
+                circ.Score = 0;
                 //MessageBox.Show("miss");
             }
             circ.isAlive = false;
+            approach.Reset();
             
+            approach.Start();
+            double FadeOutTime = 300;
+            bool resultDrew = false;
+            while (approach.ElapsedMilliseconds < FadeOutTime)
+            {
+                if(approach.ElapsedMilliseconds >= FadeOutTime / 2 && !resultDrew)
+                {
+                    resultDrew = true;
+                    DrawResult(circ);
+                }
+                MainCircle.Height = 0.4 * CS * ((double)(approach.ElapsedMilliseconds / (double)FadeOutTime)) + CS;
+                MainCircle.Width = 0.4 * CS * ((double)(approach.ElapsedMilliseconds / (double)FadeOutTime)) + CS;
+                Canvas.SetTop(MainCircle, y + (CS / 2) - MainCircle.Height / 2);
+                Canvas.SetLeft(MainCircle, x + (CS / 2) - MainCircle.Width / 2);
+                MainCircle.Opacity = ((double)(FadeOutTime - approach.ElapsedMilliseconds) / (double)FadeOutTime) - 0.1;
+                await Task.Delay(1);
+            }
+            approach.Stop();
             MainWindow.PlayArea.Children.Remove(MainCircle);
+
+            //DrawResult(circ);
+            
+            UpdatePlayerLabel();
             //ClickableCircle.Circles.Remove(circ.ID);
+            approach = null;
             MainCircle = null;
             circle = null;
             circ = null;
+
+        }
+        async static void DrawResult(ClickableCircle circle)
+        {
+            Image result = new Image()
+            {
+                Source = GetImageAfterScore(circle.Score),
+                Width = CS / 3,
+                Height = CS / 3,
+                Opacity = 0.8
+            };
+            MainWindow.PlayArea.Children.Add(result);
+            Canvas.SetLeft(result, Canvas.GetLeft(circle.parent) + CS * 0.4 + result.Width / 2); 
+            Canvas.SetTop(result, Canvas.GetTop(circle.parent) + CS * 0.4 + result.Height / 2);
+            Canvas.SetZIndex(result, HitObjects.Count + 1);
+            await Task.Delay(250);
+            MainWindow.PlayArea.Children.Remove(result);
+            result = null;
+
+        }
+        public static BitmapImage GetImageAfterScore(int score)
+        {
+            return score switch
+            {
+                300 => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png")),
+                100 => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png")),
+                50 => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png")),
+                _ => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png"))
+            };
+        }
+        public static void UpdatePlayerLabel()
+        {
+            MainWindow.ScoreLabel.Content = player.Score.ToString();
+            MainWindow.AccuracyLabel.Content = Math.Round(player.Accuracy * 100,2).ToString() + "%";
+            MainWindow.ComboLabel.Content = player.Combo.ToString() + "x";
 
         }
         async public static void SpawnSlider(HitObjectEvent HitObj, int ID)
@@ -180,11 +242,11 @@ namespace CircleClickingGame
             Stopwatch.Start();
             while(j < HitObjects.Count)
             {
-                if (Engine.Abort)
+                if (Abort)
                 {
                     break;
                 }
-                if (Stopwatch.ElapsedMilliseconds >= HitObjects[j].Time)
+                if (Stopwatch.ElapsedMilliseconds + HitObjects[0].Time - 500 >= HitObjects[j].Time)
                 {
                     if ((HitObjects[j].Type & 1 ) > 0)
                     {
@@ -202,11 +264,12 @@ namespace CircleClickingGame
         }
         public static void LoadMap()
         {
-            Engine.Init(Engine.MainWindow);
+            Init(MainWindow);
             if(MapPath == null || MapPath == string.Empty)
             {
                 return;
             }
+            Abort = true;
             StreamReader sr = new StreamReader(MapPath);
             bool begin = false;
             while (!sr.EndOfStream)
@@ -245,7 +308,7 @@ namespace CircleClickingGame
             FadeIn = 800 - 500 * ((AR - 5) / 5);
             HitWindow = 140 - 8 * OD;
             CS = 109 - (9 * CircSize);
-            Abort = true;
+            //Abort = false;
             player = new PlayerStats(HitObjects.Count);
             StatsUpdate();
         }
@@ -254,6 +317,7 @@ namespace CircleClickingGame
     {
         public static Dictionary<int,ClickableCircle> Circles = new Dictionary<int, ClickableCircle>();
         public int ID { get; set; }
+        public int Score { get; set; }
         public Ellipse parent { get; set; }
         public Ellipse ApproachCircle { get; set; }
         public bool isAlive { get; set; }
@@ -267,7 +331,7 @@ namespace CircleClickingGame
             Circles.Add(ID,this);
             sw = timer;
         }
-        public static void ClickCheck(int ID)
+        async public static void ClickCheck(int ID)
         {
             ClickableCircle check = Circles[ID];
             if (check.isAlive)
@@ -275,10 +339,15 @@ namespace CircleClickingGame
                 if(check.sw.ElapsedMilliseconds + Engine.HitWindow >= Engine.Preempt && check.sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow )
                 {
                     check.isAlive = false;
+                    check.Score = 300;
+                    Engine.player.AddScore(300);                                       
                     return;
                 }               
                 else
                 {
+                    check.Score = 0;
+                    check.isAlive = false;
+                    Engine.player.Miss();
                     //ShakeAnimation() - todo
                 }
             }
@@ -290,7 +359,10 @@ namespace CircleClickingGame
         public int Score { get; set; }
         public int Combo { get; set; }
         public int ObjectsHit300 { get; set; }
-        public int Accuracy { get; set; }
+        public int ObjectsHit100 { get; set; }
+        public int ObjectsHit50 { get; set; }
+        public int ObjectsMiss { get; set; }
+        public double Accuracy { get; set; }
         public int TotalObj { get; set; }
         public PlayerStats(int TotalObj)
         {
@@ -298,8 +370,41 @@ namespace CircleClickingGame
             Score = 0;
             Combo = 0;
             ObjectsHit300 = 0;
+            ObjectsHit100 = 0;
+            ObjectsHit50 = 0;
+            ObjectsMiss = 0;
             Accuracy = 100;
             this.TotalObj = TotalObj;
+        }
+        public void CalcStats()
+        {
+            double totalobj = ObjectsMiss + ObjectsHit50 + ObjectsHit100 + ObjectsHit300;
+            Accuracy = ((double)ObjectsHit300 + 0.66 * (double)ObjectsHit100 + 0.33 * (double)ObjectsHit50) / totalobj;
+        }
+        public void Miss()
+        {
+            Combo = 0;
+            ObjectsMiss++;
+            CalcStats();
+        }
+        public void AddScore(int pts)
+        {
+            Combo++;
+            Score += pts * Combo;
+            switch (pts)
+            {
+                case 300:
+                    ObjectsHit300++;
+                    break;
+                case 100:
+                    ObjectsHit100++;
+                    break;
+                case 50:
+                    ObjectsHit50++;
+                    break;
+                default:break;
+            }
+            CalcStats();
         }
     }
     class HitObjectEvent

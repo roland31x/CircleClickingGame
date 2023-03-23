@@ -7,4 +7,12 @@
     <UseWPF>true</UseWPF>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Remove="Images\miss.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\miss.png" />
+  </ItemGroup>
+
 </Project>
