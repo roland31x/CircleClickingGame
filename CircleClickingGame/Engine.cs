@@ -22,7 +22,7 @@ namespace CircleClickingGame
         public static MainWindow MainWindow;       
         public static Random rng;
         
-        public static DispatcherTimer Timer; // wip
+        //public static DispatcherTimer Timer; // wip
         //public static List<ClickableCircle> Circles;        
         public static List<HitObjectEvent> HitObjects;
         
@@ -40,9 +40,12 @@ namespace CircleClickingGame
         public static double AR = 8;
         public static double Preempt;
         public static double FadeIn;
-        public static double HitWindow;
+        public static double HitWindow300;
+        public static double HitWindow100;
+        public static double HitWindow50;
         public static double OD = 5;
         public static double HP = 8;
+        public static double FadeOutTime = 300;
 
 
         public static bool isPaused;
@@ -57,11 +60,11 @@ namespace CircleClickingGame
             MainWindow = m;
             rng = new Random();
             ClickableCircle.Circles = new Dictionary<int, ClickableCircle>();
-            Timer = new DispatcherTimer();
+            //Timer = new DispatcherTimer();
             HitObjects = new List<HitObjectEvent>();
-            Timer.Tick += Timer_Tick;
+            //Timer.Tick += Timer_Tick;
             Stopwatch = new Stopwatch();
-            Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
+            //Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
             m.PlayArea.Background = new SolidColorBrush(Colors.Black);
             m.PauseButton.IsEnabled = false;
             MediaPlayer = new MediaPlayer();
@@ -87,10 +90,10 @@ namespace CircleClickingGame
             {
                 Height = CS,
                 Width = CS,
-                Stroke = new SolidColorBrush(Colors.White),
-                StrokeThickness = 4,
+                //Stroke = new SolidColorBrush(Colors.White),
+                //StrokeThickness = 4,
                 Tag = order,
-                Fill = new SolidColorBrush(Colors.DarkBlue),
+                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
                 Opacity = 0,
                 
             };
@@ -103,7 +106,7 @@ namespace CircleClickingGame
             {
                 Height = CS * 6,
                 Width = CS * 6,
-                Stroke = new SolidColorBrush(Colors.Blue),
+                Stroke = new SolidColorBrush(Colors.Azure),
                 StrokeThickness = 4,
                 Opacity = 0
                 
@@ -132,19 +135,14 @@ namespace CircleClickingGame
 
                 await Task.Delay(1);
             }
-            approach.Stop();
+            //approach.Stop();
             MainWindow.PlayArea.Children.Remove(circle);
-            approach.Start();
+            //approach.Start();
             if (circ.isAlive)
             {
-                while(approach.ElapsedMilliseconds < Preempt + HitWindow && circ.isAlive)
+                while(approach.ElapsedMilliseconds < Preempt + HitWindow50 && circ.isAlive)
                 {
-                    if (circ.isAlive)
-                    {
-                        await Task.Delay(1);
-                    }
-                    else break;
-                   
+                     await Task.Delay(1);                 
                 }               
             }
             approach.Stop();
@@ -155,26 +153,38 @@ namespace CircleClickingGame
                 //MessageBox.Show("miss");
             }
             circ.isAlive = false;
-            approach.Reset();
             
-            approach.Start();
-            double FadeOutTime = 300;
-            bool resultDrew = false;
-            while (approach.ElapsedMilliseconds < FadeOutTime)
+            if(circ.Score == 0)
             {
-                if(approach.ElapsedMilliseconds >= FadeOutTime / 2 && !resultDrew)
+                DrawResult(circ);
+            }
+            else
+            {
+                bool resultDrew = false;
+                if (circ.Score == 300)
                 {
                     resultDrew = true;
-                    DrawResult(circ);
                 }
-                MainCircle.Height = 0.4 * CS * ((double)(approach.ElapsedMilliseconds / (double)FadeOutTime)) + CS;
-                MainCircle.Width = 0.4 * CS * ((double)(approach.ElapsedMilliseconds / (double)FadeOutTime)) + CS;
-                Canvas.SetTop(MainCircle, y + (CS / 2) - MainCircle.Height / 2);
-                Canvas.SetLeft(MainCircle, x + (CS / 2) - MainCircle.Width / 2);
-                MainCircle.Opacity = ((double)(FadeOutTime - approach.ElapsedMilliseconds) / (double)FadeOutTime) - 0.1;
-                await Task.Delay(1);
-            }
-            approach.Stop();
+                approach.Reset();
+
+                approach.Start();
+                while (approach.ElapsedMilliseconds < FadeOutTime)
+                {
+                    if (approach.ElapsedMilliseconds >= FadeOutTime / 2 && !resultDrew)
+                    {
+                        resultDrew = true;
+                        DrawResult(circ);
+                    }
+                    MainCircle.Height = 0.4 * CS * ((double)(approach.ElapsedMilliseconds / (double)FadeOutTime)) + CS;
+                    MainCircle.Width = 0.4 * CS * ((double)(approach.ElapsedMilliseconds / (double)FadeOutTime)) + CS;
+                    Canvas.SetTop(MainCircle, y + (CS / 2) - MainCircle.Height / 2);
+                    Canvas.SetLeft(MainCircle, x + (CS / 2) - MainCircle.Width / 2);
+                    MainCircle.Opacity = ((double)(FadeOutTime - approach.ElapsedMilliseconds) / (double)FadeOutTime) - 0.1;
+                    await Task.Delay(1);
+                }
+                approach.Stop();
+            }           
+            
             MainWindow.PlayArea.Children.Remove(MainCircle);
 
             //DrawResult(circ);
@@ -182,36 +192,39 @@ namespace CircleClickingGame
             UpdatePlayerLabel();
             //ClickableCircle.Circles.Remove(circ.ID);
             approach = null;
-            MainCircle = null;
-            circle = null;
-            circ = null;
-
         }
         async static void DrawResult(ClickableCircle circle)
         {
+            double AnimationLength = 500;
             Image result = new Image()
             {
                 Source = GetImageAfterScore(circle.Score),
                 Width = CS / 3,
                 Height = CS / 3,
-                Opacity = 0.8
+                Opacity = 1
             };
             MainWindow.PlayArea.Children.Add(result);
-            Canvas.SetLeft(result, Canvas.GetLeft(circle.parent) + CS * 0.4 + result.Width / 2); 
-            Canvas.SetTop(result, Canvas.GetTop(circle.parent) + CS * 0.4 + result.Height / 2);
+            Canvas.SetLeft(result, circle.Xpos + CS / 6 + result.Width / 2); 
+            Canvas.SetTop(result, circle.Ypos + CS / 6 + result.Height / 2);
             Canvas.SetZIndex(result, HitObjects.Count + 1);
-            await Task.Delay(250);
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            while(sw.ElapsedMilliseconds <= AnimationLength)
+            {
+                result.Opacity = (AnimationLength - sw.ElapsedMilliseconds) / AnimationLength;
+                await Task.Delay(1);
+            }
+            sw.Stop();
+            sw = null;
             MainWindow.PlayArea.Children.Remove(result);
-            result = null;
 
         }
         public static BitmapImage GetImageAfterScore(int score)
         {
             return score switch
-            {
-                300 => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png")),
-                100 => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png")),
-                50 => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png")),
+            {               
+                100 => new BitmapImage(new Uri("pack://application:,,,/Images/hit100.png")),
+                50 => new BitmapImage(new Uri("pack://application:,,,/Images/hit50.png")),
                 _ => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png"))
             };
         }
@@ -306,7 +319,10 @@ namespace CircleClickingGame
             }
             Preempt = 1250 - 750 * ((AR - 5) / 5);
             FadeIn = 800 - 500 * ((AR - 5) / 5);
-            HitWindow = 140 - 8 * OD;
+            HitWindow300 = -6 * (OD - 13.75);
+            HitWindow100 = -8 * (OD - 17.4375);
+            HitWindow50 = -10 * (OD - 19.95);
+
             CS = 109 - (9 * CircSize);
             //Abort = false;
             player = new PlayerStats(HitObjects.Count);
@@ -316,10 +332,12 @@ namespace CircleClickingGame
     class ClickableCircle
     {
         public static Dictionary<int,ClickableCircle> Circles = new Dictionary<int, ClickableCircle>();
-        public int ID { get; set; }
+        public int ID { get; }
         public int Score { get; set; }
-        public Ellipse parent { get; set; }
-        public Ellipse ApproachCircle { get; set; }
+        public double Xpos { get; }
+        public double Ypos { get; }
+        public Ellipse parent { get; }
+        public Ellipse ApproachCircle { get; }
         public bool isAlive { get; set; }
         public Stopwatch sw { get; set; }
         public ClickableCircle(Ellipse main, Ellipse approach, Stopwatch timer) 
@@ -330,19 +348,35 @@ namespace CircleClickingGame
             isAlive = true;
             Circles.Add(ID,this);
             sw = timer;
+            Xpos = Canvas.GetLeft(main);
+            Ypos = Canvas.GetTop(main);
         }
         async public static void ClickCheck(int ID)
         {
             ClickableCircle check = Circles[ID];
             if (check.isAlive)
             {
-                if(check.sw.ElapsedMilliseconds + Engine.HitWindow >= Engine.Preempt && check.sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow )
+                if(check.sw.ElapsedMilliseconds + Engine.HitWindow300 >= Engine.Preempt && check.sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow300 )
                 {
                     check.isAlive = false;
                     check.Score = 300;
                     Engine.player.AddScore(300);                                       
                     return;
-                }               
+                }
+                else if(check.sw.ElapsedMilliseconds + Engine.HitWindow100 >= Engine.Preempt && check.sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow100)
+                {
+                    check.isAlive = false;
+                    check.Score = 100;
+                    Engine.player.AddScore(100);
+                    return;
+                }
+                else if(check.sw.ElapsedMilliseconds + Engine.HitWindow50 >= Engine.Preempt && check.sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow50)
+                {
+                    check.isAlive = false;
+                    check.Score = 50;
+                    Engine.player.AddScore(50);
+                    return;
+                }
                 else
                 {
                     check.Score = 0;
@@ -409,10 +443,10 @@ namespace CircleClickingGame
     }
     class HitObjectEvent
     {
-        public Point coords { get; set; }
-        public int Time { get; set; }
-        public int Type { get; set; }
-        public string[] Props { get; set; }
+        public Point coords { get; }
+        public int Time { get; }
+        public int Type { get; }
+        public string[] Props { get; }
         public HitObjectEvent(int x, int y, int time, int type, string[] pars)
         {
             coords = new Point(x, y);

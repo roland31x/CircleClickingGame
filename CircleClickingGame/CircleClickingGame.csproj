@@ -8,10 +8,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\hit100.png" />
+    <None Remove="Images\hit50.png" />
+    <None Remove="Images\hitcircle.png" />
     <None Remove="Images\miss.png" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\hit100.png" />
+    <Resource Include="Images\hit50.png" />
+    <Resource Include="Images\hitcircle.png" />
     <Resource Include="Images\miss.png" />
   </ItemGroup>
 
