@@ -320,8 +320,9 @@ namespace CircleClickingGame
             {
                 if (Abort)
                 {
-                    MessageBox.Show("Aborted past beatmap.");
-                    break;
+                    MediaPlayer.Stop();
+                    //MessageBox.Show("Aborted past beatmap.");
+                    return;
                 }
                 if (Stopwatch.ElapsedMilliseconds + HitObjects[0].Time - 500 >= HitObjects[j].Time)
                 {
@@ -336,6 +337,12 @@ namespace CircleClickingGame
                     j++;
                 }
                 else await Task.Delay(1);
+            }
+            if (Abort)
+            {
+                MediaPlayer.Stop();
+                //MessageBox.Show("Aborted past beatmap.");
+                return;
             }
             await Task.Delay(5000);
             Stopwatch.Stop();
@@ -469,13 +476,13 @@ namespace CircleClickingGame
                     Engine.player.AddScore(50);
                     return;
                 }
-                else
-                {
-                    check.Score = 0;
-                    check.isAlive = false;
-                    Engine.player.Miss();
-                    //ShakeAnimation() - todo
-                }
+                //else
+                //{
+                //    check.Score = 0;
+                //    check.isAlive = false;
+                //    Engine.player.Miss();
+                //    //ShakeAnimation() - todo
+                //}
             }
         }
     }

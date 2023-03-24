@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -39,6 +40,7 @@ namespace CircleClickingGame
             StartButton.MouseLeave += StartButton_MouseLeave;
             SettingsButton.MouseEnter += StartButton_MouseEnter;
             SettingsButton.MouseLeave += StartButton_MouseLeave;
+            MouseWheel += MainWindow_MouseWheel;
             this.Cursor = Cursors.None;
             MyCursor = new Image()
             {
@@ -52,8 +54,28 @@ namespace CircleClickingGame
             Engine.MainInit(this);
         }
 
+        async private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if(Engine.MediaPlayer != null)
+            {
+                if (e.Delta > 0)
+                {
+                    Engine.MediaPlayer.Volume += 0.01;
+                }
+                else if (e.Delta < 0)
+                {
+                    Engine.MediaPlayer.Volume -= 0.01;
+                }
+                VolumeLabel.Visibility = Visibility.Visible;
+                VolumeLabel.Content = "Volume: " + Math.Round(Engine.MediaPlayer.Volume * 100, 2).ToString() + "%";
+                await Task.Delay(500);
+                VolumeLabel.Visibility = Visibility.Collapsed;
+            }          
+        }
+
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
+           
             if(e.Key == Engine.key1 || e.Key == Engine.key2)
             {
                 foreach (Ellipse v in PlayArea.Children.OfType<Ellipse>())
@@ -84,7 +106,7 @@ namespace CircleClickingGame
 
         private async void BeatMap_Click(object sender, RoutedEventArgs e)
         {
-            Engine.Default();
+            Engine.Default();           
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Select the beatmap";
             if (Engine.UseOsuSongsFolder)
@@ -111,7 +133,7 @@ namespace CircleClickingGame
                 StartButton.Visibility = Visibility.Collapsed;
                 Engine.UpdatePlayerLabel(true);
             }
-            
+            await Task.Delay(200);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
@@ -151,5 +173,6 @@ namespace CircleClickingGame
         {
 
         }
+
     }
 }
