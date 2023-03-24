@@ -23,22 +23,80 @@ namespace CircleClickingGame
     /// </summary>
     public partial class MainWindow : Window
     {
+        Image MyCursor;
         public MainWindow()
         {
             InitializeComponent();
+            MainInit();
+        }
+        void MainInit()
+        {
             StartButton.Visibility = Visibility.Collapsed;
             PauseButton.Visibility = Visibility.Collapsed;
+            BeatmapButton.MouseEnter += StartButton_MouseEnter;
+            BeatmapButton.MouseLeave += StartButton_MouseLeave;
+            StartButton.MouseEnter += StartButton_MouseEnter;
+            StartButton.MouseLeave += StartButton_MouseLeave;
+            SettingsButton.MouseEnter += StartButton_MouseEnter;
+            SettingsButton.MouseLeave += StartButton_MouseLeave;
+            this.Cursor = Cursors.None;
+            MyCursor = new Image()
+            {
+                Source = new BitmapImage(new Uri("pack://application:,,,/Images/hit50.png")),
+                Width = 25,
+                Height = 25,
+            };
+            this.KeyDown += MainWindow_KeyDown;
+            PlayArea.Children.Add(MyCursor);
+            MouseMove += MainWindow_MouseMove;
             Engine.MainInit(this);
+        }
+
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Engine.key1 || e.Key == Engine.key2)
+            {
+                foreach (Ellipse v in PlayArea.Children.OfType<Ellipse>())
+                {
+                    if (v.IsMouseDirectlyOver && v.Tag != null)
+                    {
+                        ClickableCircle.ClickCheck(Convert.ToInt32(v.Tag));
+                    }
+                }
+            }           
+        }
+
+        private void StartButton_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.None;
+        }
+
+        private void StartButton_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Cursor = Cursors.Hand;
+        }
+
+        private void MainWindow_MouseMove(object sender, MouseEventArgs e)
+        {
+            Canvas.SetLeft(MyCursor, e.GetPosition(PlayArea).X - MyCursor.Width / 2);
+            Canvas.SetTop(MyCursor, e.GetPosition(PlayArea).Y - MyCursor.Height / 2);
         }
 
         private async void BeatMap_Click(object sender, RoutedEventArgs e)
         {
             Engine.Default();
             OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            openFileDialog.Title = "Select the beatmap";
+            if (Engine.UseOsuSongsFolder)
+            {
+                openFileDialog.InitialDirectory = Engine.OsuSongsPath;
+            }
+            else
+            {
+                openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
+            }            
             openFileDialog.Filter = "osu! files (*.osu)|*.osu";
-            openFileDialog.FilterIndex = 2;
+            openFileDialog.FilterIndex = 1;
             openFileDialog.RestoreDirectory = true;
             openFileDialog.ShowDialog();
             Engine.MapPath = openFileDialog.FileName;
@@ -47,7 +105,6 @@ namespace CircleClickingGame
             {
                 StartButton.Visibility = Visibility.Visible;
                 PauseButton.Content = "STOP";
-                Engine.Abort = false;
             }
             else
             {
@@ -59,6 +116,8 @@ namespace CircleClickingGame
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
+            Engine.Abort = false;
+
             Engine.MediaPlayer.Play();
 
             Engine.Run();
@@ -66,7 +125,6 @@ namespace CircleClickingGame
             StartButton.Visibility = Visibility.Collapsed;
 
             PauseButton.Visibility = Visibility.Visible;
-            //Engine.SpawnCircle(400, 400, test1++);
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
@@ -87,6 +145,11 @@ namespace CircleClickingGame
                 Engine.isPaused = true;
                 (sender as Button).Content = "RESUME";
             }
+        }
+
+        private void SettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

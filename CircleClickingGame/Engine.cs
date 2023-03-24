@@ -34,8 +34,9 @@ namespace CircleClickingGame
         public static string MapPath;
         public static string MapName;
         public static string MapAudio;
-
-
+        public static bool UseOsuSongsFolder;
+        public static string OsuSongsPath = string.Empty;
+        public static string PathFile = "PathFile.txt";
 
         public static double CS;
         public static double CircSize;
@@ -48,7 +49,8 @@ namespace CircleClickingGame
         public static double OD;
         public static double HP;
         public static double FadeOutTime = 300;
-
+        public static Key key1 = Key.Z;
+        public static Key key2 = Key.X;
 
         public static bool isPaused;
         public static bool Abort;
@@ -57,7 +59,26 @@ namespace CircleClickingGame
 
         public static void MainInit(MainWindow m)
         {           
-            MainWindow = m;                 
+            MainWindow = m;
+            UseOsuSongsFolder = TryLoadOsuPath();
+        }
+        static bool TryLoadOsuPath()
+        {
+            if (File.Exists(PathFile))
+            {
+                string toCheck;
+                using (StreamReader sr = new StreamReader(PathFile))
+                {
+                    toCheck = sr.ReadLine();
+                };
+                if (File.Exists(toCheck))
+                {
+                    OsuSongsPath = toCheck;
+                    return true;
+                }
+                else return false;
+            }
+            else return false;
         }
         public static void Default()
         {
