@@ -21,4 +21,41 @@
     <Resource Include="Images\miss.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Beatmaps\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Beatmaps\Easy1\audio.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Easy1\Cranky - Crocus %28PandaHero%29 [Easy].osu">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Easy2\audio.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Easy2\Cranky - Chandelier - King %28Mao%29 [Kibbleru%27s Normal].osu">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Easy3\audio.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Easy3\Raphlesia &amp; BilliumMoto - My Love %28Mao%29 [Easy].osu">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Hard\audio.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Hard\dj TAKA - quaver %28Sotarks%29 [Reform%27s Insane].osu">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Medium\Kuba Oms - My Love %28W h i t e%29 [Insane].osu">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\Medium\My Love.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

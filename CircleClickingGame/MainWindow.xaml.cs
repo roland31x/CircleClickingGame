@@ -36,7 +36,7 @@ namespace CircleClickingGame
             Engine.Default();
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
-            openFileDialog.InitialDirectory = "c:\\";
+            openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
             openFileDialog.Filter = "osu! files (*.osu)|*.osu";
             openFileDialog.FilterIndex = 2;
             openFileDialog.RestoreDirectory = true;
