@@ -71,13 +71,33 @@ namespace CircleClickingGame
             Stopwatch = new Stopwatch();
             //Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
             MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
-            MainWindow.PauseButton.IsEnabled = false;
+            MainWindow.PauseButton.Visibility = Visibility.Collapsed;
             MediaPlayer = new MediaPlayer();
             player = new PlayerStats(HitObjects.Count);
             MapPath = string.Empty;
             MapName = "No Beatmap Loaded";
             MapAudio = string.Empty;
             StatsUpdate(false);
+            UpdatePlayerLabel(true);
+
+        }
+        public static void SoftReset()
+        {
+            Abort = true;
+            isPaused = false;
+            rng = new Random();
+            ClickableCircle.Circles = new Dictionary<int, ClickableCircle>();
+            //Timer = new DispatcherTimer();
+            HitObjects = new List<HitObjectEvent>();
+            //Timer.Tick += Timer_Tick;
+            Stopwatch = new Stopwatch();
+            //Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
+            MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
+            MainWindow.PauseButton.Visibility = Visibility.Collapsed;
+            MediaPlayer = new MediaPlayer();
+            player = new PlayerStats(HitObjects.Count);
+
+            LoadMap();
             UpdatePlayerLabel(true);
 
         }
@@ -89,7 +109,7 @@ namespace CircleClickingGame
             }
             else
             {
-                MainWindow.StatsLabel.Content = "No stats available";
+                MainWindow.StatsLabel.Content = "No map info available";
             }
         }
 
@@ -297,7 +317,10 @@ namespace CircleClickingGame
                 else await Task.Delay(1);
             }
             Stopwatch.Stop();
-            MainWindow.PauseButton.IsEnabled = false;          
+            //ResultWindow.ShowResults(player);
+            Engine.SoftReset();
+            MainWindow.StartButton.Visibility = Visibility.Visible;
+            MainWindow.PauseButton.Visibility = Visibility.Collapsed;         
         }
         public static bool LoadMap()
         {

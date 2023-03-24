@@ -16,13 +16,20 @@
 
             <Grid/>
         </Canvas>
-        <Button Content="SELECT BEATMAP" Click="BeatMap_Click" HorizontalAlignment="Center" Canvas.Left="1022" Canvas.Top="112" VerticalAlignment="Top" Background="#FF00FF0B" FontFamily="Broadway" Height="61" Width="222" FontSize="20"/>
-        <Button x:Name="StartButton" Content="START" Canvas.Left="1056" Canvas.Top="315" Click="Button_Click_1" HorizontalAlignment="Center" VerticalAlignment="Top" Background="#FF5C0000" FontFamily="Elephant" Foreground="White" Height="57" Width="154" FontSize="24"/>
+        <Button Content="SELECT BEATMAP" Click="BeatMap_Click" HorizontalAlignment="Left" Canvas.Left="1022" Canvas.Top="9" VerticalAlignment="Center" Background="#FFFFA9F5" FontFamily="Broadway" Height="28" Width="222" FontSize="20"/>
+        <Button x:Name="StartButton" Content="START" Canvas.Left="563" Canvas.Top="324" Click="Button_Click_1" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Elephant" Foreground="White" Height="56" Width="154" FontSize="24">
+            <Button.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="#FFFF96EB"/>
+                    <GradientStop Color="#FF7A77FF" Offset="1"/>
+                </LinearGradientBrush>
+            </Button.Background>
+        </Button>
         <Label x:Name="label1" Content="No beatmap loaded" HorizontalAlignment="Left" Canvas.Left="176" Canvas.Top="10" VerticalAlignment="Center" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="928"/>
-        <Button x:Name="PauseButton" Content="STOP" Canvas.Left="1046" Canvas.Top="549" Height="43" Width="174" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Red" Foreground="White" FontFamily="Elephant" FontSize="24" Click="Button_Click_2"/>
-        <Label x:Name="StatsLabel" Content="No stats available" Canvas.Left="30" Canvas.Top="126" Height="452" Width="233" Foreground="White" FontSize="24" FontFamily="Gill Sans MT"/>
-        <Label x:Name="ComboLabel" Content="" Canvas.Left="320" Canvas.Top="597" Height="61" Width="304" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="36" VerticalContentAlignment="Center"/>
-        <Label x:Name="AccuracyLabel" Content="" Canvas.Left="656" Canvas.Top="597" Height="61" Width="304" Foreground="White" FontSize="36" HorizontalContentAlignment="Right" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <Label x:Name="ScoreLabel" Content="" Canvas.Left="320" Canvas.Top="36" Height="51" Width="640" Foreground="White" FontSize="36" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Button x:Name="PauseButton" Content="STOP" Canvas.Left="554" Canvas.Top="627" Height="43" Width="174" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Red" Foreground="White" FontFamily="Elephant" FontSize="24" Click="Button_Click_2"/>
+        <Label x:Name="StatsLabel" Content="No map info available" Canvas.Left="30" Canvas.Top="9" Height="187" Width="233" Foreground="White" FontSize="24" FontFamily="Gill Sans MT" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label x:Name="ComboLabel" Content="" Canvas.Left="320" Canvas.Top="597" Height="60" Width="232" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="36" VerticalContentAlignment="Center" FontFamily="Gill Sans MT"/>
+        <Label x:Name="AccuracyLabel" Content="" Canvas.Left="727" Canvas.Top="602" Height="50" Width="233" Foreground="White" FontSize="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Gill Sans MT" HorizontalContentAlignment="Right"/>
+        <Label x:Name="ScoreLabel" Content="" Canvas.Left="524" Canvas.Top="36" Height="50" Width="233" Foreground="White" FontSize="22" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Gill Sans MT" HorizontalContentAlignment="Center"/>
     </Canvas>
 </Window>

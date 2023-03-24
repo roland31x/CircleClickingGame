@@ -26,8 +26,8 @@ namespace CircleClickingGame
         public MainWindow()
         {
             InitializeComponent();
-            StartButton.IsEnabled = false;
-            PauseButton.IsEnabled = false;
+            StartButton.Visibility = Visibility.Collapsed;
+            PauseButton.Visibility = Visibility.Collapsed;
             Engine.MainInit(this);
         }
 
@@ -45,15 +45,13 @@ namespace CircleClickingGame
             Engine.MapName = openFileDialog.FileName.Split(@"\").Last().Split('.').First();
             if (Engine.LoadMap())
             {
-                StartButton.IsEnabled = true;
-                PauseButton.IsEnabled = false;
+                StartButton.Visibility = Visibility.Visible;
                 PauseButton.Content = "STOP";
                 Engine.Abort = false;
             }
             else
             {
-                StartButton.IsEnabled = false;
-                PauseButton.IsEnabled = false;
+                StartButton.Visibility = Visibility.Collapsed;
                 Engine.UpdatePlayerLabel(true);
             }
             
@@ -61,13 +59,13 @@ namespace CircleClickingGame
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            Engine.Abort = false;
-
             Engine.MediaPlayer.Play();
 
             Engine.Run();
-            (sender as Button).IsEnabled = false;
-            PauseButton.IsEnabled = true;
+
+            StartButton.Visibility = Visibility.Collapsed;
+
+            PauseButton.Visibility = Visibility.Visible;
             //Engine.SpawnCircle(400, 400, test1++);
         }
 
