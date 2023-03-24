@@ -411,9 +411,9 @@ namespace CircleClickingGame
                 }
                 Preempt = 1250 - 750 * ((AR - 5) / 5);
                 FadeIn = 800 - 500 * ((AR - 5) / 5);
-                HitWindow300 = -6 * (OD - 13.75);
-                HitWindow100 = -8 * (OD - 17.4375);
-                HitWindow50 = -10 * (OD - 19.95);
+                HitWindow300 = -6 * (OD - 17.75); // base val 13.75 , adjusted for easier difficulty due to wpf fps
+                HitWindow100 = -8 * (OD - 20.4375); // base val 17.4375
+                HitWindow50 = -10 * (OD - 24.95); // base val 19.95
 
                 CS = 109 - (9 * CircSize);
                 //Abort = false;
@@ -476,13 +476,13 @@ namespace CircleClickingGame
                     Engine.player.AddScore(50);
                     return;
                 }
-                //else
-                //{
-                //    check.Score = 0;
-                //    check.isAlive = false;
-                //    Engine.player.Miss();
-                //    //ShakeAnimation() - todo
-                //}
+                else
+                {
+                    check.Score = 0;
+                    check.isAlive = false;
+                    Engine.player.Miss();
+                    //ShakeAnimation() - todo
+                }
             }
         }
     }

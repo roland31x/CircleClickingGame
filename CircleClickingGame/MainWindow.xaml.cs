@@ -60,11 +60,11 @@ namespace CircleClickingGame
             {
                 if (e.Delta > 0)
                 {
-                    Engine.MediaPlayer.Volume += 0.01;
+                    Engine.MediaPlayer.Volume += 0.05;
                 }
                 else if (e.Delta < 0)
                 {
-                    Engine.MediaPlayer.Volume -= 0.01;
+                    Engine.MediaPlayer.Volume -= 0.05;
                 }
                 VolumeLabel.Visibility = Visibility.Visible;
                 VolumeLabel.Content = "Volume: " + Math.Round(Engine.MediaPlayer.Volume * 100, 2).ToString() + "%";
