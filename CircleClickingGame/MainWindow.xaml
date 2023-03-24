@@ -25,7 +25,7 @@
                 </LinearGradientBrush>
             </Button.Background>
         </Button>
-        <Label x:Name="label1" Content="No beatmap loaded" HorizontalAlignment="Left" Canvas.Left="176" Canvas.Top="10" VerticalAlignment="Center" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="928"/>
+        <Label x:Name="label1" Content="No beatmap loaded" HorizontalAlignment="Left" Canvas.Left="263" Canvas.Top="10" VerticalAlignment="Center" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="754"/>
         <Button x:Name="PauseButton" Content="STOP" Canvas.Left="554" Canvas.Top="627" Height="43" Width="174" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Red" Foreground="White" FontFamily="Elephant" FontSize="24" Click="Button_Click_2"/>
         <Label x:Name="StatsLabel" Content="No map info available" Canvas.Left="30" Canvas.Top="9" Height="187" Width="233" Foreground="White" FontSize="24" FontFamily="Gill Sans MT" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Label x:Name="ComboLabel" Content="" Canvas.Left="320" Canvas.Top="597" Height="60" Width="232" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="36" VerticalContentAlignment="Center" FontFamily="Gill Sans MT"/>
