@@ -22,10 +22,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Beatmaps\" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <None Update="Beatmaps\ThisIsForTestingOnly\audio.mp3">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Beatmaps\ThisIsForTestingOnly\Release Hallucination - Chronostasis (Seni) [A Brilliant Petal Frozen In an Everlasting Moment].osu">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Beatmaps\Easy1\audio.mp3">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -337,6 +337,7 @@ namespace CircleClickingGame
                 }
                 else await Task.Delay(1);
             }
+            await Task.Delay(5000);
             Stopwatch.Stop();
             //ResultWindow.ShowResults(player);
             Engine.SoftReset();
@@ -365,11 +366,11 @@ namespace CircleClickingGame
                         if (File.Exists(MapAudio))
                         {
                             MediaPlayer.Open(new Uri(MapAudio));
-                            MessageBox.Show("Map audio loaded!");
+                            //MessageBox.Show("Map audio loaded!");
                         }
                         else
                         {
-                            MessageBox.Show("Map audio not found!");
+                            //MessageBox.Show("Map audio not found!");
                         }
                     }
                     if (line == "[Difficulty]")
