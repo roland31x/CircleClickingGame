@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\cursor.png" />
     <None Remove="Images\hit100.png" />
     <None Remove="Images\hit50.png" />
     <None Remove="Images\hitcircle.png" />
@@ -15,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Images\cursor.png" />
     <Resource Include="Images\hit100.png" />
     <Resource Include="Images\hit50.png" />
     <Resource Include="Images\hitcircle.png" />

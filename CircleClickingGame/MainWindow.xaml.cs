@@ -44,9 +44,9 @@ namespace CircleClickingGame
             this.Cursor = Cursors.None;
             MyCursor = new Image()
             {
-                Source = new BitmapImage(new Uri("pack://application:,,,/Images/hit50.png")),
-                Width = 25,
-                Height = 25,
+                Source = new BitmapImage(new Uri("pack://application:,,,/Images/cursor.png")),
+                Width = 100,
+                Height = 100,
             };
             this.KeyDown += MainWindow_KeyDown;
             PlayArea.Children.Add(MyCursor);

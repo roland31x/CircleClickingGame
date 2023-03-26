@@ -158,8 +158,8 @@ namespace CircleClickingGame
 
             Ellipse circle = new Ellipse()
             {
-                Height = CS * 6,
-                Width = CS * 6,
+                Height = CS * 4,
+                Width = CS * 4,
                 Stroke = new SolidColorBrush(Colors.Azure),
                 StrokeThickness = 4,
                 Opacity = 0
@@ -182,8 +182,8 @@ namespace CircleClickingGame
                     circle.Opacity = (double)(approach.ElapsedMilliseconds / (double)(FadeIn));
                 }             
                 //MessageBox.Show(circle.Opacity.ToString());
-                circle.Height = 5 * CS * (1 - (double)(approach.ElapsedMilliseconds / (double)Preempt)) + CS;
-                circle.Width = 5 * CS * (1 - (double)(approach.ElapsedMilliseconds / (double)Preempt)) + CS;
+                circle.Height = 3 * CS * (1 - (double)(approach.ElapsedMilliseconds / (double)Preempt)) + CS;
+                circle.Width = 3 * CS * (1 - (double)(approach.ElapsedMilliseconds / (double)Preempt)) + CS;
                 Canvas.SetTop(circle, y + (CS / 2) - circle.Height / 2);
                 Canvas.SetLeft(circle, x + (CS / 2) - circle.Width / 2);
 
@@ -207,7 +207,7 @@ namespace CircleClickingGame
                 //MessageBox.Show("miss");
             }
             circ.isAlive = false;
-            
+            Canvas.SetZIndex(MainCircle, 0);
             if(circ.Score == 0)
             {
                 DrawResult(circ);
@@ -260,7 +260,7 @@ namespace CircleClickingGame
             MainWindow.PlayArea.Children.Add(result);
             Canvas.SetLeft(result, circle.Xpos + CS / 6 + result.Width / 2); 
             Canvas.SetTop(result, circle.Ypos + CS / 6 + result.Height / 2);
-            Canvas.SetZIndex(result, HitObjects.Count + 1);
+            Canvas.SetZIndex(result, 0);
             Stopwatch sw = new Stopwatch();
             sw.Start();
             while(sw.ElapsedMilliseconds <= AnimationLength)
@@ -476,13 +476,13 @@ namespace CircleClickingGame
                     Engine.player.AddScore(50);
                     return;
                 }
-                else
-                {
-                    check.Score = 0;
-                    check.isAlive = false;
-                    Engine.player.Miss();
-                    //ShakeAnimation() - todo
-                }
+                //else
+                //{
+                //    check.Score = 0;
+                //    check.isAlive = false;
+                //    Engine.player.Miss();
+                //    //ShakeAnimation() - todo
+                //}
             }
         }
     }
