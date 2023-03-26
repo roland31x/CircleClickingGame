@@ -476,13 +476,13 @@ namespace CircleClickingGame
                     Engine.player.AddScore(50);
                     return;
                 }
-                //else
-                //{
-                //    check.Score = 0;
-                //    check.isAlive = false;
-                //    Engine.player.Miss();
-                //    //ShakeAnimation() - todo
-                //}
+                else
+                {
+                    check.Score = 0;
+                    check.isAlive = false;
+                    Engine.player.Miss();
+                    //ShakeAnimation() - todo
+                }
             }
         }
     }
