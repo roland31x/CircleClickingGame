@@ -345,7 +345,12 @@ namespace CircleClickingGame
                 //MessageBox.Show("Aborted past beatmap.");
                 return;
             }
+            
+
             await Task.Delay(5000);
+            ScoreWindow PlayerScore = new ScoreWindow();
+            PlayerScore.ShowDialog();
+            await Task.Delay(500);
             Stopwatch.Stop();
             //ResultWindow.ShowResults(player);
             Engine.SoftReset();
@@ -419,7 +424,7 @@ namespace CircleClickingGame
                 CS = 109 - (9 * CircSize);
                 //Abort = false;
                 DiffMultiplier = Math.Round((double)((HP + CircSize + OD + (double)Math.Clamp(HitObjects.Count / (double)(HitObjects.Last().Time / 1000) * 8,0,16)) / 38d) * 5);
-                MessageBox.Show(DiffMultiplier.ToString());
+                //MessageBox.Show(DiffMultiplier.ToString());
                 player = new PlayerStats(HitObjects.Count);
                 StatsUpdate(true);
                 return true;
@@ -500,8 +505,10 @@ namespace CircleClickingGame
         public int ObjectsMiss { get; set; }
         public double Accuracy { get; set; }
         public int TotalObj { get; set; }
+        public int MaxCombo { get; set; }
         public PlayerStats(int TotalObj)
         {
+            MaxCombo = 0;
             HP = 100;
             Score = 0;
             Combo = 0;
@@ -514,11 +521,15 @@ namespace CircleClickingGame
         }
         public void CalcStats()
         {
+            if (Combo > MaxCombo)
+            {
+                MaxCombo = Combo;
+            }
             double totalobj = ObjectsMiss + ObjectsHit50 + ObjectsHit100 + ObjectsHit300;
             Accuracy = ((double)ObjectsHit300 + 0.66 * (double)ObjectsHit100 + 0.33 * (double)ObjectsHit50) / totalobj;
         }
         public void Miss()
-        {
+        {            
             Combo = 0;
             ObjectsMiss++;
             CalcStats();
