@@ -9,7 +9,7 @@
         WindowStartupLocation="CenterScreen">
     <Canvas Background="Black">
         <Label x:Name="Combobox" Content="COMBO" Canvas.Left="28" Canvas.Top="298" HorizontalAlignment="Center" VerticalAlignment="Top" Width="166" Foreground="White" FontSize="36"/>
-        <Label x:Name="MapNamebox" Content="MAP NAME" Canvas.Left="7" Canvas.Top="10" Width="383" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center" Height="53"/>
+        <Label x:Name="MapNamebox" Content="MAP NAME" Canvas.Left="7" Canvas.Top="10" Width="383" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center" Height="24"/>
         <Label x:Name="X100sbox" Content="100s" Canvas.Left="28" Canvas.Top="143" Width="166" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#FF47FF39" HorizontalContentAlignment="Right" FontSize="22"/>
         <Label x:Name="X300sbox" Content="300S" Canvas.Left="28" Canvas.Top="82" Width="166" Foreground="#FF4EECFF" HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Right" FontSize="22"/>
         <Label x:Name="X50sbox" Content="50S" Canvas.Left="28" Canvas.Top="196" Width="166" Foreground="#FFF5FF3D" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Right" FontSize="22"/>
@@ -19,6 +19,7 @@
         <Image Height="32" Canvas.Left="215" Source="/Images/hit100.png" Stretch="Fill" Canvas.Top="147" Width="32" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Image Height="32" Canvas.Left="215" Source="/Images/miss.png" Stretch="Fill" Canvas.Top="255" Width="32" RenderTransformOrigin="0.099,0.047" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Image Height="91" Canvas.Left="186" Source="/Images/cursor.png" Stretch="Fill" Canvas.Top="56" Width="90" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label x:Name="ScoreBox" Content="PLAYER SCORE" Canvas.Left="7" Canvas.Top="32" Width="383" Foreground="White" HorizontalContentAlignment="Center" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" FontStyle="Italic"/>
 
     </Canvas>
 </Window>

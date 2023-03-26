@@ -29,6 +29,7 @@ namespace CircleClickingGame
             Missesbox.Content = Engine.player.ObjectsMiss.ToString() + "x";
             Combobox.Content = Engine.player.MaxCombo.ToString() + " / " + Engine.HitObjects.Count;
             Accuracybox.Content = "Accuracy: " + (Math.Round(Engine.player.Accuracy, 2) * 100).ToString() + "%";
+            ScoreBox.Content = Engine.player.Score.ToString();
         }
     }
 }

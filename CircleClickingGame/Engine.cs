@@ -331,7 +331,7 @@ namespace CircleClickingGame
                     {
                         SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
                     }
-                    else if((HitObjects[j].Type & 2) > 0)
+                    else if((HitObjects[j].Type & 2) > 0) // spawnslider actually but i need to implement it
                     {
                         SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
                     }
@@ -535,9 +535,9 @@ namespace CircleClickingGame
             CalcStats();
         }
         public void AddScore(int pts)
-        {
-            Combo++;
+        {           
             Score += (int)Math.Ceiling(pts * ((double)1 + ((double)(Combo * Engine.DiffMultiplier) / 25)));
+            Combo++;
             switch (pts)
             {
                 case 300:
