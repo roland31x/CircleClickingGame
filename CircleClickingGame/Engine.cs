@@ -49,6 +49,7 @@ namespace CircleClickingGame
         public static double OD;
         public static double HP;
         public static double FadeOutTime = 300;
+        public static double DiffMultiplier;
         public static Key key1 = Key.Z;
         public static Key key2 = Key.X;
 
@@ -417,6 +418,7 @@ namespace CircleClickingGame
 
                 CS = 109 - (9 * CircSize);
                 //Abort = false;
+                DiffMultiplier = Math.Round(((HP + CircSize + OD + (double)Math.Clamp((HitObjects.Count / (double)(HitObjects.Last().Time / 1000) ) * 8,0,16)) / 38) * 5);
                 player = new PlayerStats(HitObjects.Count);
                 StatsUpdate(true);
                 return true;
@@ -523,7 +525,7 @@ namespace CircleClickingGame
         public void AddScore(int pts)
         {
             Combo++;
-            Score += pts * Combo;
+            Score += (int)Math.Ceiling(pts * ((double)1 + ((double)(Combo * Engine.DiffMultiplier) / 25)));
             switch (pts)
             {
                 case 300:
