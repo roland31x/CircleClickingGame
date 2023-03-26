@@ -418,7 +418,8 @@ namespace CircleClickingGame
 
                 CS = 109 - (9 * CircSize);
                 //Abort = false;
-                DiffMultiplier = Math.Round(((HP + CircSize + OD + (double)Math.Clamp((HitObjects.Count / (double)(HitObjects.Last().Time / 1000) ) * 8,0,16)) / 38) * 5);
+                DiffMultiplier = Math.Round((double)((HP + CircSize + OD + (double)Math.Clamp(HitObjects.Count / (double)(HitObjects.Last().Time / 1000) * 8,0,16)) / 38d) * 5);
+                MessageBox.Show(DiffMultiplier.ToString());
                 player = new PlayerStats(HitObjects.Count);
                 StatsUpdate(true);
                 return true;
