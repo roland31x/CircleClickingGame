@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using System.Globalization;
 using Path = System.Windows.Shapes.Path;
 
 namespace CircleClickingGame
@@ -398,7 +399,9 @@ namespace CircleClickingGame
             PlayerScore.ShowDialog();
             await Task.Delay(500);
             Stopwatch.Stop();
-            Engine.SoftReset();      
+            Engine.SoftReset();
+            MainWindow.StartButton.Visibility = Visibility.Visible;
+            MainWindow.PauseButton.Visibility = Visibility.Collapsed;
         }
         public static bool LoadMap()
         {
@@ -431,10 +434,10 @@ namespace CircleClickingGame
                     }
                     if (line == "[Difficulty]")
                     {
-                        HP = double.Parse(sr.ReadLine().Split(':').Last());
-                        CircSize = double.Parse(sr.ReadLine().Split(':').Last());
-                        OD = double.Parse(sr.ReadLine().Split(':').Last());
-                        AR = double.Parse(sr.ReadLine().Split(':').Last());
+                        HP = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
+                        CircSize = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
+                        OD = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
+                        AR = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
                     }
                     if (!begin && line == "[HitObjects]")
                     {
