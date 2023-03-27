@@ -171,7 +171,8 @@ namespace CircleClickingGame
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-
+            SettingsWindow setwin = new SettingsWindow();
+            setwin.Show();
         }
 
     }

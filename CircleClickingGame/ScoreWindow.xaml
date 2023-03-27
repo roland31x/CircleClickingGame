@@ -7,7 +7,13 @@
         mc:Ignorable="d"
         Title="ScoreWindow" Height="400" Width="400" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
-    <Canvas Background="Black">
+    <Canvas>
+        <Canvas.Background>
+            <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                <GradientStop Color="Black"/>
+                <GradientStop Color="#FF7E004A" Offset="1"/>
+            </LinearGradientBrush>
+        </Canvas.Background>
         <Label x:Name="Combobox" Content="COMBO" Canvas.Left="28" Canvas.Top="298" HorizontalAlignment="Center" VerticalAlignment="Top" Width="166" Foreground="White" FontSize="36"/>
         <Label x:Name="MapNamebox" Content="MAP NAME" Canvas.Left="7" Canvas.Top="10" Width="383" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center" Height="24"/>
         <Label x:Name="X100sbox" Content="100s" Canvas.Left="28" Canvas.Top="143" Width="166" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#FF47FF39" HorizontalContentAlignment="Right" FontSize="22"/>
