@@ -104,7 +104,10 @@ namespace CircleClickingGame
         }
         public static void DefaultSave()
         {
-            File.Delete(PathFile);
+            if (File.Exists(PathFile))
+            {
+                File.Delete(PathFile);
+            }
             File.Create(PathFile).Dispose();
             using (StreamWriter sw = new StreamWriter(PathFile,true))
             {

@@ -18,11 +18,11 @@
         <Label Content="Your osu! songs folder path:" Canvas.Left="10" Foreground="White" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Top="79" FontStyle="Italic" FontWeight="Bold"/>
         <Label x:Name="pathfilebox" Content="NOT SET" Canvas.Left="13" Foreground="White" FontSize="10" Canvas.Top="113" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FF00777B"/>
         <Button Content="SET" Canvas.Left="208" Canvas.Top="84" Click="PathFileSet" Background="#FF00C8FF" HorizontalAlignment="Left" VerticalAlignment="Center" Width="51"/>
-        <Label Content="KEY1:" Canvas.Left="13" Foreground="White" FontSize="14" Canvas.Top="166" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Label Content="KEY2:" Canvas.Left="13" Foreground="White" FontSize="14" Canvas.Top="195" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Label Content="Controls:" Canvas.Left="10" Foreground="White" FontSize="14" Canvas.Top="137" HorizontalAlignment="Left" VerticalAlignment="Top" Width="86" RenderTransformOrigin="0.516,0.33" FontStyle="Italic" FontWeight="Bold"/>
-        <Button x:Name="btn1" Content="Z" Canvas.Left="68" Canvas.Top="170" Click="Key1Click" Background="#FFD5FF00" Width="135" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        <Button x:Name="btn2" Content="X" Canvas.Left="68" Canvas.Top="199" Click="Key2Click" Background="#FFDFFF00" Width="135" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Label Content="KEY1:" Canvas.Left="13" Foreground="White" FontSize="14" Canvas.Top="181" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label Content="KEY2:" Canvas.Left="13" Foreground="White" FontSize="14" Canvas.Top="210" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label Content="Controls:" Canvas.Left="10" Foreground="White" FontSize="20" Canvas.Top="148" HorizontalAlignment="Center" VerticalAlignment="Top" Width="113" RenderTransformOrigin="0.516,0.33" FontStyle="Italic" FontWeight="Bold"/>
+        <Button x:Name="btn1" Content="Z" Canvas.Left="68" Canvas.Top="185" Click="Key1Click" Background="#FFD5FF00" Width="135" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Button x:Name="btn2" Content="X" Canvas.Left="68" Canvas.Top="214" Click="Key2Click" Background="#FFDFFF00" Width="135" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Button Content="SAVE" Canvas.Left="260" Canvas.Top="526" Click="SaveButton_Click" Background="#FF1AFF00" Width="80" HorizontalAlignment="Center" VerticalAlignment="Top" Height="30" FontSize="18"/>
         <Button Content="Reset to Default" Canvas.Left="244" Canvas.Top="488" Click="DefaultClick" Background="#FF3EA4FF" Width="112" Height="23" HorizontalAlignment="Center" VerticalAlignment="Top"/>
     </Canvas>
