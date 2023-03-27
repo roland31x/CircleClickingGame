@@ -102,7 +102,6 @@ namespace CircleClickingGame
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             (sender as Button).Content = "Saved!";
-            KeyConverter kc = new KeyConverter();
 
             await Task.Delay(1000);
             (sender as Button).Content = "Save";

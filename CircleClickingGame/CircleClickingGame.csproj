@@ -60,12 +60,6 @@
     <None Update="Beatmaps\Hard\dj TAKA - quaver %28Sotarks%29 [Reform%27s Insane].osu">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="Beatmaps\Medium\Kuba Oms - My Love %28W h i t e%29 [Insane].osu">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Beatmaps\Medium\My Love.mp3">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="User\Settings.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
