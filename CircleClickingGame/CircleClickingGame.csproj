@@ -60,9 +60,10 @@
     <None Update="Beatmaps\Hard\dj TAKA - quaver %28Sotarks%29 [Reform%27s Insane].osu">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="User\Settings.data">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="User\" />
   </ItemGroup>
 
 </Project>
