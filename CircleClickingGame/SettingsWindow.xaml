@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CircleClickingGame"
         mc:Ignorable="d"
-        Title="SettingsWindow" Height="600" Width="600" ResizeMode="NoResize">
+        Title="SettingsWindow" Height="600" Width="600" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
     <Canvas>
         <Canvas.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
@@ -23,5 +24,6 @@
         <Button x:Name="btn1" Content="Z" Canvas.Left="68" Canvas.Top="170" Click="Key1Click" Background="#FFD5FF00" Width="135" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <Button x:Name="btn2" Content="X" Canvas.Left="68" Canvas.Top="199" Click="Key2Click" Background="#FFDFFF00" Width="135" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <Button Content="SAVE" Canvas.Left="260" Canvas.Top="526" Click="SaveButton_Click" Background="#FF1AFF00" Width="80" HorizontalAlignment="Center" VerticalAlignment="Top" Height="30" FontSize="18"/>
+        <Button Content="Reset to Default" Canvas.Left="244" Canvas.Top="488" Click="DefaultClick" Background="#FF3EA4FF" Width="112" Height="23" HorizontalAlignment="Center" VerticalAlignment="Top"/>
     </Canvas>
 </Window>

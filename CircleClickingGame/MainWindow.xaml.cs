@@ -129,7 +129,7 @@ namespace CircleClickingGame
             await Task.Delay(200);
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private async void Button_Click_1(object sender, RoutedEventArgs e)
         {
             Engine.Abort = false;
 
@@ -140,6 +140,7 @@ namespace CircleClickingGame
             StartButton.Visibility = Visibility.Collapsed;
 
             PauseButton.Visibility = Visibility.Visible;
+
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)

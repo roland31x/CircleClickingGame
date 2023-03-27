@@ -67,7 +67,7 @@ namespace CircleClickingGame
                 TryLoadSettings();
             }
         }
-        static bool TryLoadSettings()
+        public static bool TryLoadSettings()
         {
             if (File.Exists(PathFile))
             {
@@ -102,7 +102,7 @@ namespace CircleClickingGame
                 return false;
             }
         }
-        static void DefaultSave()
+        public static void DefaultSave()
         {
             File.Delete(PathFile);
             File.Create(PathFile).Dispose();
@@ -395,10 +395,7 @@ namespace CircleClickingGame
             PlayerScore.ShowDialog();
             await Task.Delay(500);
             Stopwatch.Stop();
-            //ResultWindow.ShowResults(player);
-            Engine.SoftReset();
-            MainWindow.StartButton.Visibility = Visibility.Visible;
-            MainWindow.PauseButton.Visibility = Visibility.Collapsed;         
+            Engine.SoftReset();      
         }
         public static bool LoadMap()
         {

@@ -125,5 +125,12 @@ namespace CircleClickingGame
             (sender as Button).Content = "Save";
             
         }
+
+        private void DefaultClick(object sender, RoutedEventArgs e)
+        {
+            Engine.DefaultSave();
+            Engine.TryLoadSettings();
+            this.Close();
+        }
     }
 }
