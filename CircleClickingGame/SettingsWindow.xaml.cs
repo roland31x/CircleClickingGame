@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -74,7 +76,23 @@ namespace CircleClickingGame
 
         private void PathFileSet(object sender, RoutedEventArgs e)
         {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Title = "Select a beatmap from your osu! folder.";
+            openFileDialog.InitialDirectory = Engine.OsuSongsPath;
+            openFileDialog.Filter = "osu! files (*.osu)|*.osu";
+            openFileDialog.FilterIndex = 1;
+            openFileDialog.RestoreDirectory = false;
+            openFileDialog.ShowDialog();
+            if (File.Exists(openFileDialog.FileName))
+            {
+                string p = openFileDialog.FileName;
+                
+                string toremove = p.Split(@"\")[p.Split(@"\").Count() - 2] + @"\" + p.Split(@"\").Last();
+                MessageBox.Show(toremove);
 
+                Engine.OsuSongsPath = p.Replace(toremove, "");
+            }
+            pathfilebox.Content = Engine.OsuSongsPath;
         }
 
         private void Key1Click(object sender, RoutedEventArgs e)
@@ -102,7 +120,7 @@ namespace CircleClickingGame
         private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             (sender as Button).Content = "Saved!";
-
+            Engine.OverWriteSave();
             await Task.Delay(1000);
             (sender as Button).Content = "Save";
             

@@ -34,9 +34,8 @@ namespace CircleClickingGame
         public static string MapPath;
         public static string MapName;
         public static string MapAudio;
-        public static bool UseOsuSongsFolder;
-        public static string OsuSongsPath = string.Empty;
-        public static string PathFile = "PathFile.txt";
+        public static string OsuSongsPath;
+        public static string PathFile = "User\\Settings.data";
 
         public static double CS;
         public static double CircSize;
@@ -61,25 +60,69 @@ namespace CircleClickingGame
         public static void MainInit(MainWindow m)
         {           
             MainWindow = m;
-            UseOsuSongsFolder = TryLoadOsuPath();
+            if (!TryLoadSettings())
+            {
+                MessageBox.Show("Problem occured while loading settings, resetting to default.");
+                DefaultSave();
+                TryLoadSettings();
+            }
         }
-        static bool TryLoadOsuPath()
+        static bool TryLoadSettings()
         {
             if (File.Exists(PathFile))
             {
                 string toCheck;
                 using (StreamReader sr = new StreamReader(PathFile))
                 {
-                    toCheck = sr.ReadLine();
-                };
-                if (File.Exists(toCheck))
-                {
-                    OsuSongsPath = toCheck;
-                    return true;
-                }
-                else return false;
+                    try
+                    {
+                        toCheck = sr.ReadLine();
+                        if (Directory.Exists(toCheck))
+                        {
+                            OsuSongsPath = toCheck;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                        toCheck = sr.ReadLine();
+                        Engine.key1 = (Key)Enum.Parse(typeof(Key), toCheck);
+                        toCheck = sr.ReadLine();
+                        Engine.key2 = (Key)Enum.Parse(typeof(Key), toCheck);
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                };               
             }
-            else return false;
+            else
+            {
+                return false;
+            }
+        }
+        static void DefaultSave()
+        {
+            File.Delete(PathFile);
+            File.Create(PathFile).Dispose();
+            using (StreamWriter sw = new StreamWriter(PathFile,true))
+            {
+                sw.WriteLine(Directory.GetCurrentDirectory());
+                sw.WriteLine(((int)Key.Z));
+                sw.WriteLine(((int)Key.X));
+            }
+        }
+        public static void OverWriteSave()
+        {
+            File.Delete(PathFile);
+            File.Create(PathFile).Dispose();
+            using (StreamWriter sw = new StreamWriter(PathFile, true))
+            {
+                sw.WriteLine(OsuSongsPath);
+                sw.WriteLine((int)Engine.key1);
+                sw.WriteLine((int)Engine.key2);
+            }
         }
         public static void Default()
         {

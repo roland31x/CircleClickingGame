@@ -15,7 +15,7 @@
         </Canvas.Background>
         <Label Content="SETTINGS" Canvas.Left="191" Foreground="White" FontSize="48"/>
         <Label Content="Your osu! songs folder path:" Canvas.Left="10" Foreground="White" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Top="79" FontStyle="Italic" FontWeight="Bold"/>
-        <Label x:Name="pathfilebox" Content="NOT SET" Canvas.Left="25" Foreground="White" FontSize="14" Canvas.Top="108" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FF00777B"/>
+        <Label x:Name="pathfilebox" Content="NOT SET" Canvas.Left="13" Foreground="White" FontSize="10" Canvas.Top="113" HorizontalAlignment="Center" VerticalAlignment="Center" Background="#FF00777B"/>
         <Button Content="SET" Canvas.Left="208" Canvas.Top="84" Click="PathFileSet" Background="#FF00C8FF" HorizontalAlignment="Left" VerticalAlignment="Center" Width="51"/>
         <Label Content="KEY1:" Canvas.Left="13" Foreground="White" FontSize="14" Canvas.Top="166" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Label Content="KEY2:" Canvas.Left="13" Foreground="White" FontSize="14" Canvas.Top="195" HorizontalAlignment="Center" VerticalAlignment="Top"/>

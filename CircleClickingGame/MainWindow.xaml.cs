@@ -109,17 +109,10 @@ namespace CircleClickingGame
             Engine.Default();           
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Title = "Select the beatmap";
-            if (Engine.UseOsuSongsFolder)
-            {
-                openFileDialog.InitialDirectory = Engine.OsuSongsPath;
-            }
-            else
-            {
-                openFileDialog.InitialDirectory = Directory.GetCurrentDirectory();
-            }            
+            openFileDialog.InitialDirectory = Engine.OsuSongsPath;        
             openFileDialog.Filter = "osu! files (*.osu)|*.osu";
             openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = true;
+            openFileDialog.RestoreDirectory = false;
             openFileDialog.ShowDialog();
             Engine.MapPath = openFileDialog.FileName;
             Engine.MapName = openFileDialog.FileName.Split(@"\").Last().Split('.').First();
@@ -172,7 +165,7 @@ namespace CircleClickingGame
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
             SettingsWindow setwin = new SettingsWindow();
-            setwin.Show();
+            setwin.ShowDialog();
         }
 
     }
