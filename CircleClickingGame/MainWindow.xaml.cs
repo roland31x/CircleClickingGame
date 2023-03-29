@@ -80,9 +80,9 @@ namespace CircleClickingGame
             {
                 foreach (Ellipse v in PlayArea.Children.OfType<Ellipse>())
                 {
-                    if (v.IsMouseDirectlyOver && v.Tag != null)
+                    if (v.IsMouseDirectlyOver && v.Tag is ClickableCircle)
                     {
-                        //ClickableCircle.ClickCheck(Convert.ToInt32(v.Tag));
+                        (v.Tag as ClickableCircle).Click();
                     }
                 }
             }           
