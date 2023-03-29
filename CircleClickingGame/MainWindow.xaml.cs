@@ -82,7 +82,7 @@ namespace CircleClickingGame
                 {
                     if (v.IsMouseDirectlyOver && v.Tag != null)
                     {
-                        ClickableCircle.ClickCheck(Convert.ToInt32(v.Tag));
+                        //ClickableCircle.ClickCheck(Convert.ToInt32(v.Tag));
                     }
                 }
             }           

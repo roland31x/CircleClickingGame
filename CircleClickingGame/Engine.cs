@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 using System.Globalization;
 using Path = System.Windows.Shapes.Path;
+using System.Windows.Media.Animation;
 
 namespace CircleClickingGame
 {
@@ -57,6 +58,7 @@ namespace CircleClickingGame
         public static bool Abort;
 
         public static PlayerStats player;
+        public static int SpawnedObj;
 
         public static void MainInit(MainWindow m)
         {           
@@ -186,115 +188,6 @@ namespace CircleClickingGame
         {
             //(sender as DispatcherTimer).
         }
-        async public static void SpawnCircle(int x, int y, int order)
-        {
-            Ellipse MainCircle = new Ellipse()
-            {
-                Height = CS,
-                Width = CS,
-                //Stroke = new SolidColorBrush(Colors.White),
-                //StrokeThickness = 4,
-                Tag = order,
-                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
-                Opacity = 0,
-                
-            };
-            MainCircle.MouseDown += Circle_ClickCheck;
-            MainWindow.PlayArea.Children.Add(MainCircle);
-            Canvas.SetTop(MainCircle, y);
-            Canvas.SetLeft(MainCircle, x);
-
-            Ellipse circle = new Ellipse()
-            {
-                Height = CS * 4,
-                Width = CS * 4,
-                Stroke = new SolidColorBrush(Colors.Azure),
-                StrokeThickness = 4,
-                Opacity = 0
-                
-            };
-            MainWindow.PlayArea.Children.Add(circle);
-            Canvas.SetTop(circle, y + CS / 2);
-            Canvas.SetLeft(circle, x + CS / 2);
-            Canvas.SetZIndex(MainCircle, HitObjects.Count + 10 - ClickableCircle.Circles.Count);
-            Canvas.SetZIndex(circle, HitObjects.Count + 10 - ClickableCircle.Circles.Count);
-            Stopwatch approach = new Stopwatch();
-
-            ClickableCircle circ = new ClickableCircle(MainCircle, circle, approach);
-            approach.Start();
-            while(approach.ElapsedMilliseconds < Preempt && circ.isAlive)
-            {
-                if(approach.ElapsedMilliseconds < FadeIn)
-                {
-                    MainCircle.Opacity = (double)(approach.ElapsedMilliseconds / (double)(FadeIn));
-                    circle.Opacity = (double)(approach.ElapsedMilliseconds / (double)(FadeIn));
-                }             
-                //MessageBox.Show(circle.Opacity.ToString());
-                circle.Height = 3 * CS * (1 - (double)(approach.ElapsedMilliseconds / (double)Preempt)) + CS;
-                circle.Width = 3 * CS * (1 - (double)(approach.ElapsedMilliseconds / (double)Preempt)) + CS;
-                Canvas.SetTop(circle, y + (CS / 2) - circle.Height / 2);
-                Canvas.SetLeft(circle, x + (CS / 2) - circle.Width / 2);
-
-                await Task.Delay(1);
-            }
-            //approach.Stop();
-            MainWindow.PlayArea.Children.Remove(circle);
-            //approach.Start();
-            if (circ.isAlive)
-            {
-                while(approach.ElapsedMilliseconds < Preempt + HitWindow50 && circ.isAlive)
-                {
-                     await Task.Delay(1);                 
-                }               
-            }
-            approach.Stop();
-            if (circ.isAlive)
-            {
-                Engine.player.Miss();
-                circ.Score = 0;
-                //MessageBox.Show("miss");
-            }
-            circ.isAlive = false;
-            Canvas.SetZIndex(MainCircle, 0);
-            if(circ.Score == 0)
-            {
-                DrawResult(circ);
-            }
-            else
-            {
-                bool resultDrew = false;
-                if (circ.Score == 300)
-                {
-                    resultDrew = true;
-                }
-                approach.Reset();
-
-                approach.Start();
-                while (approach.ElapsedMilliseconds < FadeOutTime)
-                {
-                    if (approach.ElapsedMilliseconds >= FadeOutTime / 2 && !resultDrew)
-                    {
-                        resultDrew = true;
-                        DrawResult(circ);
-                    }
-                    MainCircle.Height = 0.4 * CS * ((double)(approach.ElapsedMilliseconds / (double)FadeOutTime)) + CS;
-                    MainCircle.Width = 0.4 * CS * ((double)(approach.ElapsedMilliseconds / (double)FadeOutTime)) + CS;
-                    Canvas.SetTop(MainCircle, y + (CS / 2) - MainCircle.Height / 2);
-                    Canvas.SetLeft(MainCircle, x + (CS / 2) - MainCircle.Width / 2);
-                    MainCircle.Opacity = ((double)(FadeOutTime - approach.ElapsedMilliseconds) / (double)FadeOutTime) - 0.1;
-                    await Task.Delay(1);
-                }
-                approach.Stop();
-            }           
-            
-            MainWindow.PlayArea.Children.Remove(MainCircle);
-
-            //DrawResult(circ);
-            
-            UpdatePlayerLabel(false);
-            //ClickableCircle.Circles.Remove(circ.ID);
-            approach = null;
-        }
         async static void DrawResult(ClickableCircle circle)
         {
             double AnimationLength = 500;
@@ -347,7 +240,7 @@ namespace CircleClickingGame
         }
         async public static void SpawnSlider(HitObjectEvent HitObj, int ID)
         {
-            SpawnCircle((int)HitObj.coords.X, (int)HitObj.coords.Y, ID);
+            //SpawnCircle((int)HitObj.coords.X, (int)HitObj.coords.Y, ID);
             //DrawSlider(HitObj.coords,HitObj.Props);
         }
         async public static void DrawSlider(Point start, string[] props)
@@ -355,17 +248,15 @@ namespace CircleClickingGame
               
         }
 
-        private static void Circle_ClickCheck(object sender, MouseButtonEventArgs e)
-        {
-            ClickableCircle.ClickCheck(Convert.ToInt32((sender as Ellipse).Tag));
-        }
         public static async void Run()
         {
             int j = 0;
+            SpawnedObj = 0;
             Stopwatch.Start();
             MediaPlayer.Position = new TimeSpan(0, 0, 0, 0, HitObjects[0].Time - 500);
             while(j < HitObjects.Count)
             {
+                SpawnedObj = j;
                 if (Abort)
                 {
                     MediaPlayer.Stop();
@@ -376,11 +267,15 @@ namespace CircleClickingGame
                 {
                     if ((HitObjects[j].Type & 1 ) > 0)
                     {
-                        SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
+                        //SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
+                        ClickableCircle c = new ClickableCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y);
+                        c.Spawn();
                     }
                     else if((HitObjects[j].Type & 2) > 0) // spawnslider actually but i need to implement it
                     {
-                        SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
+                        ClickableCircle c = new ClickableCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y);
+                        c.Spawn();
+                        //SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
                     }
                     j++;
                 }
@@ -482,65 +377,206 @@ namespace CircleClickingGame
             }
         }
     }
-    class ClickableCircle
+    public class ClickableCircle
     {
         public static Dictionary<int,ClickableCircle> Circles = new Dictionary<int, ClickableCircle>();
         public int ID { get; }
         public int Score { get; set; }
         public double Xpos { get; }
         public double Ypos { get; }
-        public Ellipse parent { get; }
+        public Ellipse MainCircle { get; }
         public Ellipse ApproachCircle { get; }
         public bool isAlive { get; set; }
         public Stopwatch sw { get; set; }
-        public ClickableCircle(Ellipse main, Ellipse approach, Stopwatch timer) 
+
+        double Preempt = Engine.Preempt;
+        double FadeIn = Engine.FadeIn;
+        double FadeOutTime = Engine.FadeOutTime;
+        double HitWindow50 = Engine.HitWindow50;
+        double HitWindow100 = Engine.HitWindow100;
+        double HitWindow300 = Engine.HitWindow300;
+        public ClickableCircle(int x, int y) 
         {
-            ID = Convert.ToInt32(main.Tag);
-            parent = main;
-            ApproachCircle = approach;
-            isAlive = true;
-            Circles.Add(ID,this);
-            sw = timer;
-            Xpos = Canvas.GetLeft(main);
-            Ypos = Canvas.GetTop(main);
-        }
-        async public static void ClickCheck(int ID)
-        {
-            ClickableCircle check = Circles[ID];
-            if (check.isAlive)
+            Ellipse MainCircle = new Ellipse()
             {
-                if(check.sw.ElapsedMilliseconds + Engine.HitWindow300 >= Engine.Preempt && check.sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow300 )
+                Height = Engine.CS,
+                Width = Engine.CS,
+                //Stroke = new SolidColorBrush(Colors.White),
+                //StrokeThickness = 4,
+                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
+                Opacity = 0,
+
+            };
+            MainCircle.MouseDown += Circle_ClickCheck;
+            Engine.MainWindow.PlayArea.Children.Add(MainCircle);
+            Canvas.SetTop(MainCircle, y);
+            Canvas.SetLeft(MainCircle, x);
+
+            Ellipse circle = new Ellipse()
+            {
+                Height = Engine.CS * 4,
+                Width = Engine.CS * 4,
+                Stroke = new SolidColorBrush(Colors.Azure),
+                StrokeThickness = 4,
+                Opacity = 0
+
+            };
+            this.Xpos = x;
+            this.Ypos = y;
+            this.MainCircle = MainCircle;
+            this.ApproachCircle = circle;
+            Engine.MainWindow.PlayArea.Children.Add(circle);
+            Canvas.SetTop(circle, y + Engine.CS / 2);
+            Canvas.SetLeft(circle, x + Engine.CS / 2);
+            Canvas.SetZIndex(MainCircle, Engine.HitObjects.Count + 10 - ClickableCircle.Circles.Count);
+            Canvas.SetZIndex(circle, Engine.HitObjects.Count + 10 - ClickableCircle.Circles.Count);
+            Stopwatch approach = new Stopwatch();
+            sw = approach;
+            isAlive = true;
+        }
+        public void Spawn()
+        {
+            CircleLife();           
+        }
+
+        async Task CheckResult()
+        {
+            
+        }
+
+        async void DrawResult()
+        {
+            double AnimationLength = 500;
+            Image result = new Image()
+            {
+                Source = Engine.GetImageAfterScore(Score),
+                Width = Engine.CS / 3,
+                Height = Engine.CS / 3,
+                Opacity = 1
+            };
+            Engine.MainWindow.PlayArea.Children.Add(result);
+            Canvas.SetLeft(result, Xpos + Engine.CS / 6 + result.Width / 2);
+            Canvas.SetTop(result, Ypos + Engine.CS / 6 + result.Height / 2);
+            Canvas.SetZIndex(result, 0);
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+            while (sw.ElapsedMilliseconds <= AnimationLength)
+            {
+                result.Opacity = (AnimationLength - sw.ElapsedMilliseconds) / AnimationLength;
+                await Task.Delay(1);
+            }
+            sw.Stop();
+            sw = null;
+            Engine.MainWindow.PlayArea.Children.Remove(result);
+        }
+        async Task CircleLife()
+        {
+            sw.Start();
+            while (sw.ElapsedMilliseconds < Preempt && isAlive)
+            {
+                if (sw.ElapsedMilliseconds < FadeIn)
                 {
-                    check.isAlive = false;
-                    check.Score = 300;
-                    Engine.player.AddScore(300);                                       
+                    MainCircle.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
+                    ApproachCircle.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
+                }
+                //MessageBox.Show(circle.Opacity.ToString());
+                ApproachCircle.Height = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
+                ApproachCircle.Width = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
+                Canvas.SetTop(ApproachCircle, Ypos + (Engine.CS / 2) - ApproachCircle.Height / 2);
+                Canvas.SetLeft(ApproachCircle, Xpos + (Engine.CS / 2) - ApproachCircle.Width / 2);
+
+                await Task.Delay(1);
+            }
+            sw.Stop();
+
+            sw.Start();
+            Engine.MainWindow.PlayArea.Children.Remove(ApproachCircle);
+            if (isAlive)
+            {
+                while (sw.ElapsedMilliseconds < Preempt + HitWindow50 && isAlive)
+                {
+                    await Task.Delay(1);
+                }
+            }
+            if (isAlive)
+            {
+                Engine.player.Miss();
+                Score = 0;
+            }
+            isAlive = false;
+            Canvas.SetZIndex(MainCircle, 0);
+            sw.Stop();
+
+            if (Score == 0)
+            {
+                DrawResult();
+            }
+            else
+            {
+                bool resultDrew = false;
+                if (Score == 300)
+                {
+                    resultDrew = true;
+                }
+                sw.Reset();
+
+                sw.Start();
+                while (sw.ElapsedMilliseconds < FadeOutTime)
+                {
+                    if (sw.ElapsedMilliseconds >= FadeOutTime / 2 && !resultDrew)
+                    {
+                        resultDrew = true;
+                        DrawResult();
+                    }
+                    MainCircle.Height = 0.4 * Engine.CS * ((double)(sw.ElapsedMilliseconds / (double)FadeOutTime)) + Engine.CS;
+                    MainCircle.Width = 0.4 * Engine.CS * ((double)(sw.ElapsedMilliseconds / (double)FadeOutTime)) + Engine.CS;
+                    Canvas.SetTop(MainCircle, Ypos + (Engine.CS / 2) - MainCircle.Height / 2);
+                    Canvas.SetLeft(MainCircle, Xpos + (Engine.CS / 2) - MainCircle.Width / 2);
+                    MainCircle.Opacity = ((double)(FadeOutTime - sw.ElapsedMilliseconds) / (double)FadeOutTime) - 0.1;
+                    await Task.Delay(1);
+                }
+                sw.Stop();
+            }
+            Engine.MainWindow.PlayArea.Children.Remove(MainCircle);
+            Engine.UpdatePlayerLabel(false);
+
+        }
+        private void Circle_ClickCheck(object sender, MouseButtonEventArgs e)
+        {
+            if (isAlive)
+            {
+                if (sw.ElapsedMilliseconds + Engine.HitWindow300 >= Engine.Preempt && sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow300)
+                {
+                    isAlive = false;
+                    Score = 300;
+                    Engine.player.AddScore(300);
                     return;
                 }
-                else if(check.sw.ElapsedMilliseconds + Engine.HitWindow100 >= Engine.Preempt && check.sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow100)
+                else if (sw.ElapsedMilliseconds + Engine.HitWindow100 >= Engine.Preempt && sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow100)
                 {
-                    check.isAlive = false;
-                    check.Score = 100;
+                    isAlive = false;
+                    Score = 100;
                     Engine.player.AddScore(100);
                     return;
                 }
-                else if(check.sw.ElapsedMilliseconds + Engine.HitWindow50 >= Engine.Preempt && check.sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow50)
+                else if (sw.ElapsedMilliseconds + Engine.HitWindow50 >= Engine.Preempt && sw.ElapsedMilliseconds <= Engine.Preempt + Engine.HitWindow50)
                 {
-                    check.isAlive = false;
-                    check.Score = 50;
+                    isAlive = false;
+                    Score = 50;
                     Engine.player.AddScore(50);
                     return;
                 }
                 else
                 {
-                    check.Score = 0;
-                    check.isAlive = false;
+                    Score = 0;
+                    isAlive = false;
                     Engine.player.Miss();
                     //ShakeAnimation() - todo
                 }
             }
         }
     }
-    class PlayerStats
+    public class PlayerStats
     {
         public double HP { get; set; }
         public int Score { get; set; }
@@ -600,7 +636,7 @@ namespace CircleClickingGame
             CalcStats();
         }
     }
-    class HitObjectEvent
+    public class HitObjectEvent
     {
         public Point coords { get; }
         public int Time { get; }
