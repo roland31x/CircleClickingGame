@@ -27,6 +27,7 @@ namespace CircleClickingGame
         //public static DispatcherTimer Timer; // wip
         //public static List<ClickableCircle> Circles;        
         public static List<HitObjectEvent> HitObjects;
+        public static List<TimingPoint> TimingPoints;
         
         
         
@@ -49,7 +50,10 @@ namespace CircleClickingGame
         public static double HitWindow50;
         public static double OD;
         public static double HP;
+        public static double BPM;
         public static double FadeOutTime = 300;
+        public static double SliderVelocity;
+        public static double SliderTickrate;
         public static double DiffMultiplier;
         public static Key key1 = Key.Z;
         public static Key key2 = Key.X;
@@ -137,6 +141,7 @@ namespace CircleClickingGame
             rng = new Random();
             //Timer = new DispatcherTimer();
             HitObjects = new List<HitObjectEvent>();
+            TimingPoints = new List<TimingPoint>();
             //Timer.Tick += Timer_Tick;
             Stopwatch = new Stopwatch();
             //Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
@@ -158,6 +163,7 @@ namespace CircleClickingGame
             rng = new Random();
             //Timer = new DispatcherTimer();
             HitObjects = new List<HitObjectEvent>();
+            TimingPoints = new List<TimingPoint>();
             //Timer.Tick += Timer_Tick;
             Stopwatch = new Stopwatch();
             //Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
@@ -270,7 +276,8 @@ namespace CircleClickingGame
                 }
                 MainWindow.label1.Content = MapName;
                 StreamReader sr = new StreamReader(MapPath);
-                bool begin = false;
+                bool beginHitObjRead = false;
+                bool readTimingPoints = false;
                 while (!sr.EndOfStream)
                 {
                     string line = sr.ReadLine();
@@ -294,13 +301,30 @@ namespace CircleClickingGame
                         CircSize = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
                         OD = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
                         AR = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
+                        SliderVelocity = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
+                        SliderTickrate = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
                     }
-                    if (!begin && line == "[HitObjects]")
+                    if(line == "[TimingPoints]")
                     {
-                        begin = true;
+                        readTimingPoints = true;
                         continue;
                     }
-                    if (begin)
+                    
+                    if (!beginHitObjRead && line == "[HitObjects]")
+                    {
+                        beginHitObjRead = true;
+                        readTimingPoints = false;
+                        continue;
+                    }
+                    if (readTimingPoints)
+                    {
+                        string[] properties = line.Split(',');
+                        int time = int.Parse(properties[0]);
+                        int beatlen = int.Parse(properties[1]);
+                        int inherit = int.Parse(properties[6]);
+                        TimingPoints.Add(new TimingPoint(time,inherit,beatlen));
+                    }
+                    if (beginHitObjRead)
                     {
                         string[] properties = line.Split(',');
                         int x = int.Parse(properties[0]);
@@ -317,6 +341,7 @@ namespace CircleClickingGame
                         HitObjects.Add(new HitObjectEvent(x, y, time, type, pars));
                     }
                 }
+                BPM = TimingPoints[0].BeatLength;
                 Preempt = 1250 - 750 * ((AR - 5) / 5);
                 FadeIn = 800 - 500 * ((AR - 5) / 5);
                 HitWindow300 = -6 * (OD - 17.75); // base val 13.75 , adjusted for easier difficulty due to wpf fps
@@ -337,6 +362,69 @@ namespace CircleClickingGame
                 return false;
             }
         }
+    }
+    public class ClickableSlider
+    {
+        public int Score { get; set; }
+        public double Xpos { get; }
+        public double Ypos { get; }
+        Ellipse MainCircle { get; set; }
+        Ellipse ApproachCircle { get; set; }
+        Path Body { get; set; }
+        double Length { get; }
+        bool isAlive { get; set; }
+        Stopwatch sw { get; }
+
+        static double Preempt { get { return Engine.Preempt; } }
+        static double FadeIn { get { return Engine.FadeIn; } }
+        static double FadeOutTime { get { return Engine.FadeOutTime; } }
+        static double HitWindow50 { get { return Engine.HitWindow50; } }
+        static double Velocity { get { return Engine.SliderVelocity; } }
+        public ClickableSlider(int x, int y, string[] props)
+        {
+            Ellipse MainCircle = new Ellipse()
+            {
+                Height = Engine.CS,
+                Width = Engine.CS,
+                //Stroke = new SolidColorBrush(Colors.White),
+                //StrokeThickness = 4,
+                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
+                Opacity = 0,
+                Tag = this,
+            };
+            //MainCircle.MouseDown += Circle_ClickCheck;
+            Engine.MainWindow.PlayArea.Children.Add(MainCircle);
+            Canvas.SetTop(MainCircle, y);
+            Canvas.SetLeft(MainCircle, x);
+
+            Ellipse circle = new Ellipse()
+            {
+                Height = Engine.CS * 4,
+                Width = Engine.CS * 4,
+                Stroke = new SolidColorBrush(Colors.Azure),
+                StrokeThickness = 4,
+                Opacity = 0
+
+            };
+            this.Xpos = x;
+            this.Ypos = y;
+            this.MainCircle = MainCircle;
+            this.ApproachCircle = circle;
+            Engine.MainWindow.PlayArea.Children.Add(circle);
+
+            Path sp = new Path()
+            {
+                
+            };
+            Canvas.SetTop(circle, y + Engine.CS / 2);
+            Canvas.SetLeft(circle, x + Engine.CS / 2);
+            Canvas.SetZIndex(MainCircle, Engine.HitObjects.Count + 10 - Engine.SpawnedObj);
+            Canvas.SetZIndex(circle, Engine.HitObjects.Count + 10 - Engine.SpawnedObj);
+            Stopwatch approach = new Stopwatch();
+            sw = approach;
+            isAlive = true;
+        }
+
     }
     public class ClickableCircle
     {
@@ -613,6 +701,19 @@ namespace CircleClickingGame
             Time = time;
             Type = type;
             Props = pars;
+        }
+    }
+    public class TimingPoint
+    {
+        public int Time { get; }
+        public int Inherited { get; }
+        public int BeatLength { get; }
+
+        public TimingPoint(int time, int inherited, int beatLength)
+        {
+            Time = time;
+            Inherited = inherited;
+            BeatLength = beatLength;
         }
     }
 }
