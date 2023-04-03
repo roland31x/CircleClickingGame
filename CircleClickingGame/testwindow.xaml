@@ -1,0 +1,45 @@
+﻿<Window x:Class="CircleClickingGame.testwindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CircleClickingGame"
+        mc:Ignorable="d"
+        Title="testwindow" Height="450" Width="800">
+    <Canvas x:Name="MainCanvas">
+        <Canvas.Resources>
+            <Storyboard x:Key="Weeeee" RepeatBehavior="Forever">
+                <DoubleAnimationUsingPath Duration="0:0:3" Source="X" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="object_to_move">
+                    <DoubleAnimationUsingPath.PathGeometry>
+                        <PathGeometry Figures="M100,100 L101,101 L200,100 L205,10 L500,230"/>
+                    </DoubleAnimationUsingPath.PathGeometry>
+                </DoubleAnimationUsingPath>
+                <DoubleAnimationUsingPath Duration="0:0:3" Source="Y" Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.Y)" Storyboard.TargetName="object_to_move">
+                    <DoubleAnimationUsingPath.PathGeometry>
+                        <PathGeometry Figures="M100,100 L101,101 L200,100 L205,10 L500,230"/>
+                    </DoubleAnimationUsingPath.PathGeometry>
+                </DoubleAnimationUsingPath>
+            </Storyboard>
+        </Canvas.Resources>
+        <Canvas.Triggers>
+            <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+                <BeginStoryboard Storyboard="{StaticResource Weeeee}"/>
+            </EventTrigger>
+        </Canvas.Triggers>
+
+        <!-- Trajectory -->
+        <Path Data="M0.83299852,0.6089829 L0.61794496,0.94214186 C-7.6701996,14.489389 -12.443,30.392629 -12.443001,47.403001 C-12.443,96.887715 27.948303,137.003 77.773499,137.003 C113.58536,137.003 144.52365,116.27938 159.09367,86.248303 L159.90265,84.471135 L380.931,84.471135 L380.931,86.871121 L160.63918,86.871121 L160.4838,87.217053 C145.62575,118.25356 114.07582,139.671 77.556,139.671 C26.745804,139.671 -14.444,98.212666 -14.444,47.071218 C-14.444,29.491346 -9.5768454,13.055669 -1.124851,-0.94513857 z" Fill="#7F000000" Height="145.69" Canvas.Left="355" Stretch="Fill" Stroke="Red" StrokeThickness="2" Canvas.Top="241.667" Width="397.375"/>
+        <Path Data="M100,100 L102,102 L102,104 104,104 L104,104 L200,100 L205,10 L500,230" Fill="Transparent" Canvas.Left="0" Stroke="GreenYellow" StrokeThickness="2" Canvas.Top="0"/>
+        <!-- Because I like to move it, move it ~~ -->
+        <Ellipse x:Name="object_to_move" Opacity="0.5" Fill="LightBlue" Height="40" Stroke="Black" Width="40" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="-20" Canvas.Top="-20">
+            <Ellipse.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </Ellipse.RenderTransform>
+        </Ellipse>
+    </Canvas>
+</Window>

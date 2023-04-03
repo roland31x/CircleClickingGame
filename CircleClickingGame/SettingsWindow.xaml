@@ -8,6 +8,7 @@
         Title="SettingsWindow" Height="600" Width="600" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
     <Canvas>
+        
         <Canvas.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="Black"/>
