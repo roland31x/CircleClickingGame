@@ -340,7 +340,7 @@ namespace CircleClickingGame
                         string[] pars = new string[3];
                         if ((type & 2) > 0)
                         {
-                            pars[0] = properties[5]; // curvee
+                            pars[0] = properties[5]; // curve pts
                             pars[1] = properties[6]; // slides 
                             pars[2] = properties[7]; // length
                         }

@@ -9,7 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Drawing;
+using System.Windows;
 
 namespace CircleClickingGame
 {
@@ -51,6 +51,7 @@ namespace CircleClickingGame
         Ellipse SliderBallHitbox { get; set; }
         Path Body { get; set; }
         double Length { get; }
+        int Repeat { get; }
         bool isAlive { get; set; }
         Stopwatch sw { get; }
 
@@ -61,6 +62,9 @@ namespace CircleClickingGame
         static double Velocity { get { return Engine.SliderVelocity; } }
         public ClickableSlider(int x, int y, string[] props)
         {
+
+            Length = double.Parse(props[2]);
+            Repeat = int.Parse(props[1]);
             Ellipse MainCircle = new Ellipse()
             {
                 Height = Engine.CS,
@@ -87,8 +91,18 @@ namespace CircleClickingGame
                 Opacity = 0,
                 Tag = this,
             };
+            Ellipse SliderBHitbox = new Ellipse()
+            {
+                Height = Engine.CS * 3,
+                Width = Engine.CS * 3,
+                //Stroke = new SolidColorBrush(Colors.White),
+                //StrokeThickness = 4,
+                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
+                Opacity = 0,
+                Tag = this,
+            };
 
-
+            BuildBody(x, y, props);
 
             Ellipse circle = new Ellipse()
             {
@@ -103,12 +117,10 @@ namespace CircleClickingGame
             this.Ypos = y;
             this.MainCircle = MainCircle;
             this.ApproachCircle = circle;
+            this.SliderBall = SliderB;
+            this.SliderBallHitbox = SliderBHitbox;
             Engine.MainWindow.PlayArea.Children.Add(circle);
 
-            Path sp = new Path()
-            {
-
-            };
             Canvas.SetTop(circle, y + Engine.CS / 2);
             Canvas.SetLeft(circle, x + Engine.CS / 2);
             Canvas.SetZIndex(MainCircle, Engine.HitObjects.Count + 10 - Engine.SpawnedObj);
@@ -116,6 +128,72 @@ namespace CircleClickingGame
             Stopwatch approach = new Stopwatch();
             sw = approach;
             isAlive = true;
+        }
+        void BuildBody(int x, int y, string[] pars)
+        {
+            PathFigure pathFigure = new PathFigure();
+
+            pathFigure.StartPoint = new Point(x, y);
+
+            PathSegment slidersegment;
+
+
+
+            string[] curvepts = pars[0].Split('|');
+            if (curvepts[0] == "B")
+            {
+                slidersegment = new PolyBezierSegment();
+                for (int i = 1; i < curvepts.Length; i++)
+                {
+                    double xc = double.Parse(curvepts[i].Split(':')[0].Trim());
+                    double yc = double.Parse(curvepts[i].Split(':')[1].Trim());
+                    (slidersegment as PolyBezierSegment).Points.Add(new Point(xc, yc));
+                }
+                pathFigure.Segments.Add(slidersegment);
+            }
+            else if (curvepts[0] == "L" || curvepts[0] == "P")
+            {
+                for (int i = 1; i < curvepts.Length; i++)
+                {
+                    slidersegment = new LineSegment();
+                    double xc = double.Parse(curvepts[i].Split(':')[0].Trim());
+                    double yc = double.Parse(curvepts[i].Split(':')[1].Trim());
+                    (slidersegment as LineSegment).Point = new Point(xc, yc);
+                    pathFigure.Segments.Add(slidersegment);
+                }
+            }
+            else
+            {
+                //slidersegment = new ArcSegment();
+                //double xc = double.Parse(curvepts[1].Split(':')[0].Trim());
+                //double yc = double.Parse(curvepts[1].Split(':')[1].Trim());
+                //(slidersegment as ArcSegment).Point = new Point(xc, yc);
+                ////(slidersegment as ArcSegment).IsLargeArc = true;
+                //xc = double.Parse(curvepts[2].Split(':')[0].Trim());
+                //yc = double.Parse(curvepts[2].Split(':')[1].Trim());
+                //(slidersegment as ArcSegment).Size = new Size(xc, yc);
+
+                //pathFigure.Segments.Add(slidersegment);
+                throw new NotImplementedException();
+
+            }
+
+            PathGeometry pathGeometry = new PathGeometry();
+            pathGeometry.Figures = new PathFigureCollection
+            {
+                pathFigure
+            };
+
+            Path path = new Path()
+            {
+                Data = pathGeometry,
+                StrokeThickness = 2,
+                Stroke = new SolidColorBrush(Colors.Aquamarine),
+            };
+
+            Body = path;
+
+            Engine.MainWindow.PlayArea.Children.Add(Body);
         }
 
     }
