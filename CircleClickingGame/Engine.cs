@@ -52,7 +52,8 @@ namespace CircleClickingGame
         public static double HP;
         public static double BPM;
         public static double FadeOutTime = 300;
-        public static double SliderVelocity;
+        public static double SliderMultiplier;
+        public static double SliderVelocity = 1;
         public static double SliderTickrate;
         public static double DiffMultiplier;
         public static Key key1 = Key.Z;
@@ -240,7 +241,7 @@ namespace CircleClickingGame
                     }
                     else if((HitObjects[j].Type & 2) > 0) // spawnslider actually but i need to implement it
                     {
-                        ClickableCircle c = new ClickableCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y);
+                        ClickableSlider c = new ClickableSlider((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, HitObjects[j].Props);
                         c.Spawn();
                         //SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
                     }
@@ -307,7 +308,7 @@ namespace CircleClickingGame
                         CircSize = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
                         OD = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
                         AR = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
-                        SliderVelocity = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
+                        SliderMultiplier = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
                         SliderTickrate = double.Parse(sr.ReadLine().Split(':').Last(), CultureInfo.InvariantCulture);
                     }
                     if(line == "[TimingPoints]")

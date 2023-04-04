@@ -10,6 +10,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows;
+using System.Windows.Media.Animation;
 
 namespace CircleClickingGame
 {
@@ -50,6 +51,7 @@ namespace CircleClickingGame
         Ellipse SliderBall { get; set; }
         Ellipse SliderBallHitbox { get; set; }
         Path Body { get; set; }
+        PathGeometry BodyPG { get; set; }
         double Length { get; }
         int Repeat { get; }
         bool isAlive { get; set; }
@@ -59,7 +61,9 @@ namespace CircleClickingGame
         static double FadeIn { get { return Engine.FadeIn; } }
         static double FadeOutTime { get { return Engine.FadeOutTime; } }
         static double HitWindow50 { get { return Engine.HitWindow50; } }
-        static double Velocity { get { return Engine.SliderVelocity; } }
+        static double Multiplier { get { return Engine.SliderMultiplier; } }
+
+        static double SV { get { return Engine.SliderVelocity; } }
         public ClickableSlider(int x, int y, string[] props)
         {
 
@@ -87,7 +91,7 @@ namespace CircleClickingGame
                 Width = Engine.CS - Engine.CS * 0.1,
                 //Stroke = new SolidColorBrush(Colors.White),
                 //StrokeThickness = 4,
-                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
+                Fill = new SolidColorBrush(Colors.Red), //new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
                 Opacity = 0,
                 Tag = this,
             };
@@ -110,8 +114,7 @@ namespace CircleClickingGame
                 Width = Engine.CS * 4,
                 Stroke = new SolidColorBrush(Colors.Azure),
                 StrokeThickness = 4,
-                Opacity = 0
-
+                Opacity = 0,
             };
             this.Xpos = x;
             this.Ypos = y;
@@ -125,8 +128,7 @@ namespace CircleClickingGame
             Canvas.SetLeft(circle, x + Engine.CS / 2);
             Canvas.SetZIndex(MainCircle, Engine.HitObjects.Count + 10 - Engine.SpawnedObj);
             Canvas.SetZIndex(circle, Engine.HitObjects.Count + 10 - Engine.SpawnedObj);
-            Stopwatch approach = new Stopwatch();
-            sw = approach;
+            sw = new Stopwatch();
             isAlive = true;
         }
         void BuildBody(int x, int y, string[] pars)
@@ -183,19 +185,108 @@ namespace CircleClickingGame
             {
                 pathFigure
             };
-
+            BodyPG = pathGeometry;
             Path path = new Path()
             {
                 Data = pathGeometry,
-                StrokeThickness = 2,
+                StrokeThickness = 4,
                 Stroke = new SolidColorBrush(Colors.Aquamarine),
             };
 
             Body = path;
-
+            
             Engine.MainWindow.PlayArea.Children.Add(Body);
+            Canvas.SetTop(Body, Engine.CS / 2);
+            Canvas.SetLeft(Body, Engine.CS / 2);
+        }
+        public async void Spawn()
+        {
+            await CircleLife();
+            CircleAfterLife();
+            SliderAnimation();
+        }
+        async Task SliderAnimation()
+        {
+            double dur = Length / (Multiplier * 100 * SV) * Engine.BPM;
+            Duration duration = new Duration(TimeSpan.FromMilliseconds((int)dur));
+            SliderBall.Opacity = 1;
+            Engine.MainWindow.PlayArea.Children.Add(SliderBall);
+            TranslateTransform animatedTranslateTransform = new TranslateTransform();
+            SliderBall.RenderTransform = animatedTranslateTransform;
+            DoubleAnimationUsingPath translateXAnimation = new DoubleAnimationUsingPath();
+            translateXAnimation.PathGeometry = BodyPG;
+            translateXAnimation.Duration = duration;
+            translateXAnimation.Source = PathAnimationSource.X;
+            Storyboard.SetTarget(translateXAnimation, SliderBall);
+            Storyboard.SetTargetProperty(translateXAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.X)"));
+            
+            DoubleAnimationUsingPath translateYAnimation = new DoubleAnimationUsingPath();
+            translateYAnimation.PathGeometry = BodyPG;
+            translateYAnimation.Duration = duration;
+            translateYAnimation.Source = PathAnimationSource.Y;
+            Storyboard.SetTarget(translateYAnimation, SliderBall);
+            Storyboard.SetTargetProperty(translateYAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
+
+            // Create a Storyboard to contain and apply the animations.
+            Storyboard pathAnimationStoryboard = new Storyboard();
+            pathAnimationStoryboard.Children.Add(translateXAnimation);
+            pathAnimationStoryboard.Children.Add(translateYAnimation);
+            pathAnimationStoryboard.Completed += PathAnimationStoryboard_Completed;
+            pathAnimationStoryboard.Begin();
+            
+
         }
 
+        private void PathAnimationStoryboard_Completed(object? sender, EventArgs e)
+        {
+            Engine.MainWindow.PlayArea.Children.Remove(SliderBall);
+            Engine.MainWindow.PlayArea.Children.Remove(Body);
+            Engine.MainWindow.PlayArea.Children.Remove(MainCircle);
+            //Engine.MainWindow.PlayArea.Children.Remove(Body);
+        }
+
+        async Task CircleLife()
+        {
+            sw.Start();
+            while (sw.ElapsedMilliseconds < Preempt && isAlive)
+            {
+                if (sw.ElapsedMilliseconds < FadeIn)
+                {
+                    MainCircle.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
+                    ApproachCircle.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
+                }
+                //MessageBox.Show(circle.Opacity.ToString());
+                ApproachCircle.Height = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
+                ApproachCircle.Width = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
+                Canvas.SetTop(ApproachCircle, Ypos + (Engine.CS / 2) - ApproachCircle.Height / 2);
+                Canvas.SetLeft(ApproachCircle, Xpos + (Engine.CS / 2) - ApproachCircle.Width / 2);
+
+                await Task.Delay(1);
+            }
+            sw.Stop();
+            Engine.MainWindow.PlayArea.Children.Remove(ApproachCircle);
+
+        }
+        async Task CircleAfterLife()
+        {
+            sw.Start();
+
+            if (isAlive)
+            {
+                while (sw.ElapsedMilliseconds < Preempt + HitWindow50 && isAlive)
+                {
+                    await Task.Delay(1);
+                }
+            }
+            if (isAlive)
+            {
+                Engine.player.Miss();
+                Score = 0;
+            }
+            isAlive = false;
+            Canvas.SetZIndex(MainCircle, 0);
+            sw.Stop();
+        }
     }
     public class ClickableCircle
     {
