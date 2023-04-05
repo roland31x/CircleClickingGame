@@ -24,7 +24,8 @@ namespace CircleClickingGame
     /// </summary>
     public partial class MainWindow : Window
     {
-        Image MyCursor;
+        public Image MyCursor;
+        public object currentHover;
         public MainWindow()
         {
             InitializeComponent();
@@ -41,7 +42,7 @@ namespace CircleClickingGame
             SettingsButton.MouseEnter += StartButton_MouseEnter;
             SettingsButton.MouseLeave += StartButton_MouseLeave;
             MouseWheel += MainWindow_MouseWheel;
-            this.Cursor = Cursors.None;
+            //this.Cursor = Cursors.None;
             MyCursor = new Image()
             {
                 Source = new BitmapImage(new Uri("pack://application:,,,/Images/cursor.png")),
@@ -75,14 +76,24 @@ namespace CircleClickingGame
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
-           
+            if (e.IsRepeat)
+            {
+                return;
+            }
             if(e.Key == Engine.key1 || e.Key == Engine.key2)
             {
                 foreach (Ellipse v in PlayArea.Children.OfType<Ellipse>())
                 {
-                    if (v.IsMouseDirectlyOver && v.Tag is ClickableCircle)
+                    if (v.IsMouseDirectlyOver && (v.Tag is ClickableCircle || v.Tag is ClickableSlider))
                     {
-                        (v.Tag as ClickableCircle).Click();
+                        if (v.Tag is ClickableSlider)
+                        {
+                            (v.Tag as ClickableSlider).Click();
+                        }
+                        else
+                        {
+                            (v.Tag as ClickableCircle).Click();
+                        }                       
                     }
                 }
             }           
@@ -90,18 +101,18 @@ namespace CircleClickingGame
 
         private void StartButton_MouseLeave(object sender, MouseEventArgs e)
         {
-            Cursor = Cursors.None;
+            //Cursor = Cursors.None;
         }
 
         private void StartButton_MouseEnter(object sender, MouseEventArgs e)
         {
-            Cursor = Cursors.Hand;
+            //Cursor = Cursors.Hand;
         }
 
         private void MainWindow_MouseMove(object sender, MouseEventArgs e)
         {
-            Canvas.SetLeft(MyCursor, e.GetPosition(PlayArea).X - MyCursor.Width / 2);
-            Canvas.SetTop(MyCursor, e.GetPosition(PlayArea).Y - MyCursor.Height / 2);
+            //Canvas.SetLeft(MyCursor, e.GetPosition(PlayArea).X - MyCursor.Width / 2);
+            //Canvas.SetTop(MyCursor, e.GetPosition(PlayArea).Y - MyCursor.Height / 2);
         }
 
         private async void BeatMap_Click(object sender, RoutedEventArgs e)

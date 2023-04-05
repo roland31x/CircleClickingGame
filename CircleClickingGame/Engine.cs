@@ -220,9 +220,10 @@ namespace CircleClickingGame
         public static async void Run()
         {
             int j = 0;
+            int k = 0;
             SpawnedObj = 0;
             Stopwatch.Start();
-            MediaPlayer.Position = new TimeSpan(0, 0, 0, 0, HitObjects[0].Time - 500);
+            MediaPlayer.Position = new TimeSpan(0, 0, 0, 0, 0);
             while(j < HitObjects.Count)
             {
                 SpawnedObj = j;
@@ -232,20 +233,15 @@ namespace CircleClickingGame
                     //MessageBox.Show("Aborted past beatmap.");
                     return;
                 }
-                if (Stopwatch.ElapsedMilliseconds + HitObjects[0].Time - 500 >= HitObjects[j].Time)
+                if (Stopwatch.ElapsedMilliseconds >= HitObjects[j].Time - Preempt)
                 {
-                    if ((HitObjects[j].Type & 1 ) > 0)
-                    {
-                        //SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
-                        new ClickableCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y).Spawn();
-                    }
-                    else if((HitObjects[j].Type & 2) > 0) // spawnslider actually but i need to implement it
-                    {
-                        ClickableSlider c = new ClickableSlider((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, HitObjects[j].Props);
-                        c.Spawn();
-                        //SpawnCircle((int)HitObjects[j].coords.X, (int)HitObjects[j].coords.Y, j);
-                    }
+                    HitObjects[j].Spawn();
                     j++;
+                }
+                if(Stopwatch.ElapsedMilliseconds >= TimingPoints[k].Time)
+                {
+                    TimingPoints[k].Set();
+                    k++;
                 }
                 else await Task.Delay(1);
             }
