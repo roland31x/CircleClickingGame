@@ -95,7 +95,7 @@ namespace CircleClickingGame
 
             // Freeze the PathGeometry for performance benefits.
             animationPath.Freeze();
-
+            
             // Create a DoubleAnimationUsingPath to move the
             // rectangle horizontally along the path by animating
             // its TranslateTransform.

@@ -233,16 +233,17 @@ namespace CircleClickingGame
                     //MessageBox.Show("Aborted past beatmap.");
                     return;
                 }
+                if (Stopwatch.ElapsedMilliseconds >= TimingPoints[k].Time)
+                {
+                    TimingPoints[k].Set();
+                    k++;
+                }
                 if (Stopwatch.ElapsedMilliseconds >= HitObjects[j].Time - Preempt)
                 {
                     HitObjects[j].Spawn();
                     j++;
                 }
-                if(Stopwatch.ElapsedMilliseconds >= TimingPoints[k].Time)
-                {
-                    TimingPoints[k].Set();
-                    k++;
-                }
+                
                 else await Task.Delay(1);
             }
             if (Abort)

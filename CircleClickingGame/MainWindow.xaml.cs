@@ -24,8 +24,6 @@ namespace CircleClickingGame
     /// </summary>
     public partial class MainWindow : Window
     {
-        public Image MyCursor;
-        public object currentHover;
         public MainWindow()
         {
             InitializeComponent();
@@ -35,23 +33,9 @@ namespace CircleClickingGame
         {
             StartButton.Visibility = Visibility.Collapsed;
             PauseButton.Visibility = Visibility.Collapsed;
-            BeatmapButton.MouseEnter += StartButton_MouseEnter;
-            BeatmapButton.MouseLeave += StartButton_MouseLeave;
-            StartButton.MouseEnter += StartButton_MouseEnter;
-            StartButton.MouseLeave += StartButton_MouseLeave;
-            SettingsButton.MouseEnter += StartButton_MouseEnter;
-            SettingsButton.MouseLeave += StartButton_MouseLeave;
             MouseWheel += MainWindow_MouseWheel;
             //this.Cursor = Cursors.None;
-            MyCursor = new Image()
-            {
-                Source = new BitmapImage(new Uri("pack://application:,,,/Images/cursor.png")),
-                Width = 100,
-                Height = 100,
-            };
             this.KeyDown += MainWindow_KeyDown;
-            PlayArea.Children.Add(MyCursor);
-            MouseMove += MainWindow_MouseMove;
             Engine.MainInit(this);
         }
 
@@ -97,22 +81,6 @@ namespace CircleClickingGame
                     }
                 }
             }           
-        }
-
-        private void StartButton_MouseLeave(object sender, MouseEventArgs e)
-        {
-            //Cursor = Cursors.None;
-        }
-
-        private void StartButton_MouseEnter(object sender, MouseEventArgs e)
-        {
-            //Cursor = Cursors.Hand;
-        }
-
-        private void MainWindow_MouseMove(object sender, MouseEventArgs e)
-        {
-            //Canvas.SetLeft(MyCursor, e.GetPosition(PlayArea).X - MyCursor.Width / 2);
-            //Canvas.SetTop(MyCursor, e.GetPosition(PlayArea).Y - MyCursor.Height / 2);
         }
 
         private async void BeatMap_Click(object sender, RoutedEventArgs e)
