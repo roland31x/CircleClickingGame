@@ -33,5 +33,9 @@
         <Label x:Name="ScoreLabel" Content="" Canvas.Left="524" Canvas.Top="36" Height="50" Width="233" Foreground="White" FontSize="22" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Gill Sans MT" HorizontalContentAlignment="Center"/>
         <Button x:Name="SettingsButton" Content="O" Click="SettingsButton_Click" Canvas.Left="1236" Canvas.Top="16" Background="#FF979797" FontFamily="Broadway" Height="18" Width="25" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Label x:Name="VolumeLabel" Content="" Canvas.Left="579" Canvas.Top="611" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="122" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"/>
+        <Label x:Name="Key1Label" Content="" Canvas.Left="40" Canvas.Top="262" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="40" Background="Red"/>
+        <Label x:Name="Key2Label" Content="" Canvas.Left="40" Canvas.Top="307" HorizontalAlignment="Left" VerticalAlignment="Top" Width="40" Height="40" Background="Red"/>
+        <Label x:Name="MKey1Label" Content="" Canvas.Left="40" Canvas.Top="352" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FF1FFF00"/>
+        <Label x:Name="MKey2Label" Content="" Canvas.Left="40" Canvas.Top="397" Width="40" Height="40" HorizontalAlignment="Left" VerticalAlignment="Top" Background="#FF37FF00"/>
     </Canvas>
 </Window>

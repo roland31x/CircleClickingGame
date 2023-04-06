@@ -36,7 +36,23 @@ namespace CircleClickingGame
             MouseWheel += MainWindow_MouseWheel;
             //this.Cursor = Cursors.None;
             this.KeyDown += MainWindow_KeyDown;
+            this.KeyUp += MainWindow_KeyUp;
             Engine.MainInit(this);
+        }
+
+        private void MainWindow_KeyUp(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Engine.key1)
+            {
+                Engine.ButtonIsHeld = false;
+                Key1Label.Background = new SolidColorBrush(Colors.Transparent);
+            }
+            else if(e.Key == Engine.key2)
+            {
+                Engine.ButtonIsHeld = false;
+                Key2Label.Background = new SolidColorBrush(Colors.Transparent);
+            }
+            
         }
 
         async private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -66,18 +82,21 @@ namespace CircleClickingGame
             }
             if(e.Key == Engine.key1 || e.Key == Engine.key2)
             {
+                Engine.ButtonIsHeld = true;
+                if(e.Key == Engine.key1)
+                {
+                    Key1Label.Background = new SolidColorBrush(Colors.Yellow);
+                }
+                else
+                {
+                    Key2Label.Background = new SolidColorBrush(Colors.Yellow);
+                }
+
                 foreach (Ellipse v in PlayArea.Children.OfType<Ellipse>())
                 {
-                    if (v.IsMouseDirectlyOver && (v.Tag is ClickableCircle || v.Tag is ClickableSlider))
+                    if (v.IsMouseDirectlyOver && v.Tag is Clickable)
                     {
-                        if (v.Tag is ClickableSlider)
-                        {
-                            (v.Tag as ClickableSlider).Click();
-                        }
-                        else
-                        {
-                            (v.Tag as ClickableCircle).Click();
-                        }                       
+                        (v.Tag as Clickable).Click();
                     }
                 }
             }           

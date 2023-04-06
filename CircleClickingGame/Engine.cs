@@ -61,6 +61,7 @@ namespace CircleClickingGame
 
         public static bool isPaused;
         public static bool Abort;
+        public static bool ButtonIsHeld = false;
 
         public static PlayerStats player;
         public static int SpawnedObj;
@@ -323,7 +324,7 @@ namespace CircleClickingGame
                     if (readTimingPoints)
                     {
                         string[] properties = line.Split(',');
-                        int time = int.Parse(properties[0]);
+                        int time = (int)(double.Parse(properties[0]));
                         double beatlen = double.Parse(properties[1]);
                         int inherit = int.Parse(properties[6]);
                         TimingPoints.Add(new TimingPoint(time,inherit,beatlen));
@@ -366,67 +367,5 @@ namespace CircleClickingGame
                 return false;
             }
         }
-    }
-    
-    public class PlayerStats
-    {
-        public double HP { get; set; }
-        public int Score { get; set; }
-        public int Combo { get; set; }
-        public int ObjectsHit300 { get; set; }
-        public int ObjectsHit100 { get; set; }
-        public int ObjectsHit50 { get; set; }
-        public int ObjectsMiss { get; set; }
-        public double Accuracy { get; set; }
-        public int TotalObj { get; set; }
-        public int MaxCombo { get; set; }
-        public PlayerStats(int TotalObj)
-        {
-            MaxCombo = 0;
-            HP = 100;
-            Score = 0;
-            Combo = 0;
-            ObjectsHit300 = 0;
-            ObjectsHit100 = 0;
-            ObjectsHit50 = 0;
-            ObjectsMiss = 0;
-            Accuracy = 100;
-            this.TotalObj = TotalObj;
-        }
-        public void CalcStats()
-        {
-            if (Combo > MaxCombo)
-            {
-                MaxCombo = Combo;
-            }
-            double totalobj = ObjectsMiss + ObjectsHit50 + ObjectsHit100 + ObjectsHit300;
-            Accuracy = ((double)ObjectsHit300 + 0.66 * (double)ObjectsHit100 + 0.33 * (double)ObjectsHit50) / totalobj;
-        }
-        public void Miss()
-        {            
-            Combo = 0;
-            ObjectsMiss++;
-            CalcStats();
-        }
-        public void AddScore(int pts)
-        {           
-            Score += (int)Math.Ceiling(pts * ((double)1 + ((double)(Combo * Engine.DiffMultiplier) / 25)));
-            Combo++;
-            switch (pts)
-            {
-                case 300:
-                    ObjectsHit300++;
-                    break;
-                case 100:
-                    ObjectsHit100++;
-                    break;
-                case 50:
-                    ObjectsHit50++;
-                    break;
-                default:break;
-            }
-            CalcStats();
-        }
-    }
-    
+    }   
 }
