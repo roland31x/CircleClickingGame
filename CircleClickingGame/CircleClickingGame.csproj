@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\RedCursor.cur">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Beatmaps\Medium\Rameses B - Flaklypa %28-kevincela-%29 [Hard].osu">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -59,9 +62,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Beatmaps\Hard\dj TAKA - quaver %28Sotarks%29 [Reform%27s Insane].osu">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="User\help.cur">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="User\RedCursor.cur">

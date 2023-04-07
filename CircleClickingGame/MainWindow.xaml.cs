@@ -39,7 +39,7 @@ namespace CircleClickingGame
             this.KeyUp += MainWindow_KeyUp;
             this.MouseDown += MainWindow_MouseDown;
             this.MouseUp += MainWindow_MouseUp;
-            this.Cursor = new Cursor("User/RedCursor.cur", true);
+            this.Cursor = new Cursor("Assets/RedCursor.cur", true);
             Engine.MainInit(this);
         }
 
@@ -84,8 +84,7 @@ namespace CircleClickingGame
             {
                 Engine.Button2IsHeld = false;
                 Key2Label.Background = new SolidColorBrush(Colors.Transparent);
-            }
-           
+            }          
         }
 
         async private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)
