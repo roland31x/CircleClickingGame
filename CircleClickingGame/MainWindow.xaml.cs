@@ -199,10 +199,10 @@ namespace CircleClickingGame
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)
         {
-            //SettingsWindow setwin = new SettingsWindow();
-            //setwin.ShowDialog();
-            testwindow t = new testwindow();
-            t.ShowDialog();
+            SettingsWindow setwin = new SettingsWindow();
+            setwin.ShowDialog();
+            //testwindow t = new testwindow();
+            //t.ShowDialog();
         }
 
     }
