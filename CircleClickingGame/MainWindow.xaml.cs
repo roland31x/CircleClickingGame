@@ -37,22 +37,55 @@ namespace CircleClickingGame
             //this.Cursor = Cursors.None;
             this.KeyDown += MainWindow_KeyDown;
             this.KeyUp += MainWindow_KeyUp;
+            this.MouseDown += MainWindow_MouseDown;
+            this.MouseUp += MainWindow_MouseUp;
+            this.Cursor = new Cursor("User/RedCursor.cur", true);
             Engine.MainInit(this);
+        }
+
+        private void MainWindow_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            int i = 0;
+            if (e.LeftButton == MouseButtonState.Released)
+            {
+                Engine.MButton1IsHeld = false;
+                Engine.MainWindow.MKey1Label.Background = new SolidColorBrush(Colors.Transparent);
+            }
+            if (e.RightButton == MouseButtonState.Released)
+            {
+                Engine.MButton2IsHeld = false;
+                Engine.MainWindow.MKey2Label.Background = new SolidColorBrush(Colors.Transparent);
+            }
+
+        }
+
+        private void MainWindow_MouseDown(object sender, MouseButtonEventArgs e)
+        {            
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                Engine.MButton1IsHeld = true;
+                Engine.MainWindow.MKey1Label.Background = new SolidColorBrush(Colors.LightPink);
+            }
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                Engine.MButton2IsHeld = true;
+                Engine.MainWindow.MKey2Label.Background = new SolidColorBrush(Colors.LightPink);
+            }
         }
 
         private void MainWindow_KeyUp(object sender, KeyEventArgs e)
         {
-            if(e.Key == Engine.key1)
+            if (e.Key == Engine.key1)
             {
-                Engine.ButtonIsHeld = false;
+                Engine.Button1IsHeld = false;
                 Key1Label.Background = new SolidColorBrush(Colors.Transparent);
             }
             else if(e.Key == Engine.key2)
             {
-                Engine.ButtonIsHeld = false;
+                Engine.Button2IsHeld = false;
                 Key2Label.Background = new SolidColorBrush(Colors.Transparent);
             }
-            
+           
         }
 
         async private void MainWindow_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -82,13 +115,14 @@ namespace CircleClickingGame
             }
             if(e.Key == Engine.key1 || e.Key == Engine.key2)
             {
-                Engine.ButtonIsHeld = true;
                 if(e.Key == Engine.key1)
                 {
+                    Engine.Button1IsHeld = true;
                     Key1Label.Background = new SolidColorBrush(Colors.Yellow);
                 }
                 else
                 {
+                    Engine.Button2IsHeld = true;
                     Key2Label.Background = new SolidColorBrush(Colors.Yellow);
                 }
 
@@ -122,7 +156,7 @@ namespace CircleClickingGame
             else
             {
                 StartButton.Visibility = Visibility.Collapsed;
-                Engine.UpdatePlayerLabel(true);
+                Engine.player.Hide();
             }
             await Task.Delay(200);
         }
@@ -134,6 +168,8 @@ namespace CircleClickingGame
             Engine.MediaPlayer.Play();
 
             Engine.Run();
+
+            Engine.player.Show();
 
             StartButton.Visibility = Visibility.Collapsed;
 

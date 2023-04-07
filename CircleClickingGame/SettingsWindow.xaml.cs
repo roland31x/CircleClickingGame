@@ -32,7 +32,6 @@ namespace CircleClickingGame
             {
                 pathfilebox.Content = Engine.OsuSongsPath;
             }
-
         }
 
         private void SettingsWindow_KeyDown(object sender, KeyEventArgs e)
@@ -88,7 +87,7 @@ namespace CircleClickingGame
                 string p = openFileDialog.FileName;
                 
                 string toremove = p.Split(@"\")[p.Split(@"\").Count() - 2] + @"\" + p.Split(@"\").Last();
-                MessageBox.Show(toremove);
+               // MessageBox.Show(toremove);
 
                 Engine.OsuSongsPath = p.Replace(toremove, "");
             }

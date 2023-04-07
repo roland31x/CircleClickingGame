@@ -19,7 +19,7 @@ using System.Windows.Media.Animation;
 
 namespace CircleClickingGame
 {
-    static class Engine
+    class Engine
     {
         public static MainWindow MainWindow;       
         public static Random rng;
@@ -28,7 +28,6 @@ namespace CircleClickingGame
         //public static List<ClickableCircle> Circles;        
         public static List<HitObjectEvent> HitObjects;
         public static List<TimingPoint> TimingPoints;
-        
         
         
         public static Stopwatch Stopwatch;
@@ -51,7 +50,7 @@ namespace CircleClickingGame
         public static double OD;
         public static double HP;
         public static double BPM;
-        public static double FadeOutTime = 300;
+        public static double FadeOutTime = 200;
         public static double SliderMultiplier;
         public static double SliderVelocity = 1;
         public static double SliderTickrate;
@@ -59,11 +58,17 @@ namespace CircleClickingGame
         public static Key key1 = Key.Z;
         public static Key key2 = Key.X;
 
+        public static string Score { get { return player.Score.ToString(); } }
+
         public static bool isPaused;
         public static bool Abort;
-        public static bool ButtonIsHeld = false;
-
-        public static PlayerStats player;
+        public static bool Button1IsHeld = false;
+        public static bool Button2IsHeld = false;
+        public static bool MButton1IsHeld = false;
+        public static bool MButton2IsHeld = false;
+        public static bool AnyButtonHeld { get { return Button1IsHeld || Button2IsHeld || MButton1IsHeld || MButton2IsHeld; } }
+        static PlayerStats p = new PlayerStats(0);
+        public static PlayerStats player { get { return p; } }
         public static int SpawnedObj;
 
         public static void MainInit(MainWindow m)
@@ -150,12 +155,12 @@ namespace CircleClickingGame
             MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
             MainWindow.PauseButton.Visibility = Visibility.Collapsed;
             MediaPlayer = new MediaPlayer();
-            player = new PlayerStats(HitObjects.Count);
+            player.ReInit(HitObjects.Count);
             MapPath = string.Empty;
             MapName = "No Beatmap Loaded";
             MapAudio = string.Empty;
             StatsUpdate(false);
-            UpdatePlayerLabel(true);
+            //player.Hide();
 
         }
         public static void SoftReset()
@@ -172,10 +177,9 @@ namespace CircleClickingGame
             MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
             MainWindow.PauseButton.Visibility = Visibility.Collapsed;
             MediaPlayer = new MediaPlayer();
-            player = new PlayerStats(HitObjects.Count);
-
+            player.ReInit(HitObjects.Count);
             LoadMap();
-            UpdatePlayerLabel(true);
+            //player.Hide();
 
         }
         public static void StatsUpdate(bool OK)
@@ -203,21 +207,6 @@ namespace CircleClickingGame
                 _ => new BitmapImage(new Uri("pack://application:,,,/Images/miss.png"))
             };
         }
-        public static void UpdatePlayerLabel(bool Hide)
-        {
-            if (Hide)
-            {
-                MainWindow.ScoreLabel.Content = string.Empty;
-                MainWindow.AccuracyLabel.Content = string.Empty;
-                MainWindow.ComboLabel.Content = string.Empty;
-            }
-            else
-            {
-                MainWindow.ScoreLabel.Content = player.Score.ToString();
-                MainWindow.AccuracyLabel.Content = Math.Round(player.Accuracy * 100, 2).ToString() + "%";
-                MainWindow.ComboLabel.Content = player.Combo.ToString() + "x";
-            }            
-        }
         public static async void Run()
         {
             int j = 0;
@@ -234,7 +223,7 @@ namespace CircleClickingGame
                     //MessageBox.Show("Aborted past beatmap.");
                     return;
                 }
-                if (Stopwatch.ElapsedMilliseconds >= TimingPoints[k].Time)
+                if (k < TimingPoints.Count && Stopwatch.ElapsedMilliseconds >= TimingPoints[k].Time)
                 {
                     TimingPoints[k].Set();
                     k++;
@@ -356,8 +345,7 @@ namespace CircleClickingGame
                 CS = 109 - (9 * CircSize);
                 //Abort = false;
                 DiffMultiplier = Math.Round((double)((HP + CircSize + OD + (double)Math.Clamp(HitObjects.Count / (double)(HitObjects.Last().Time / 1000) * 8,0,16)) / 38d) * 5);
-                //MessageBox.Show(DiffMultiplier.ToString());
-                player = new PlayerStats(HitObjects.Count);
+                player.ReInit(HitObjects.Count);
                 StatsUpdate(true);
                 return true;
             }

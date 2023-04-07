@@ -4,6 +4,10 @@
              xmlns:local="clr-namespace:CircleClickingGame"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <LinearGradientBrush x:Key="GradientPinkPurple" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFFF96EB"/>
+            <GradientStop Color="#FF7A77FF" Offset="1"/>
+        </LinearGradientBrush>
     </Application.Resources>
 </Application>
