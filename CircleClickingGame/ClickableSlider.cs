@@ -27,17 +27,18 @@ namespace CircleClickingGame
         Path BodyLine { get; set; }
         public double endXpos { get; private set; }
         public double endYpos { get; private set; }
-        Point endpoint { get { return new Point(endXpos, endYpos); } }
+        Point Endpoint { get { return new Point(endXpos, endYpos); } }
         PathGeometry BodyPG { get; set; }
         PathGeometry ReversedBodyPG { get; set; }
         double Length { get; }
         double Repeat { get; }
-        bool isInAnimation { get; set; }
-        bool circleWasHit { get; set; }
-        bool wasFollowed { get; set; }
-        bool endWasHit { get; set; }
+        int WhichRepeat { get; set; }
+        bool IsInAnimation { get; set; }
+        bool CircleWasHit { get; set; }
+        bool WasFollowed { get; set; }
+        bool EndWasHit { get; set; }
         bool WasTicked { get; set; }
-        LinearGradientBrush pinkgr { get { return (LinearGradientBrush)App.Current.FindResource("GradientPinkPurple"); } }
+        static LinearGradientBrush Pinkgr { get { return (LinearGradientBrush)App.Current.FindResource("GradientPinkPurple"); } }
         static double Multiplier { get { return Engine.SliderMultiplier; } }
         static double SV { get { return Engine.SliderVelocity; } }
         public ClickableSlider(int x, int y, string[] props)
@@ -71,7 +72,7 @@ namespace CircleClickingGame
                 Width = Engine.CS,
                 Stroke = Brushes.White,
                 StrokeThickness = 4,
-                Fill = pinkgr,
+                Fill = Pinkgr,
                 Opacity = 0,
             };
             Canvas.SetZIndex(StartCircle, 0);
@@ -85,7 +86,7 @@ namespace CircleClickingGame
                 Width = Engine.CS,
                 Stroke = Brushes.White,
                 StrokeThickness = 4,
-                Fill = pinkgr,
+                Fill = Pinkgr,
                 Opacity = 0,
             };
 
@@ -154,8 +155,6 @@ namespace CircleClickingGame
             PathFigure pathFigure = new PathFigure();
 
             pathFigure.StartPoint = new Point(x, y);
-
-            PathSegment slidersegment;
 
             string[] curvepts = pars[0].Split('|');
             char type = char.Parse(curvepts[0]);
@@ -253,7 +252,7 @@ namespace CircleClickingGame
             if (Repeat > 1)
             {
                 PathFigure reversed = new PathFigure();
-                reversed.StartPoint = endpoint;               
+                reversed.StartPoint = Endpoint;               
 
                 for(int i = pathFigure.Segments.Count - 1; i >= 1; i--)
                 {
@@ -280,7 +279,7 @@ namespace CircleClickingGame
             {
                 Data = pathGeometry,
                 StrokeThickness = Engine.CS - 8,
-                Stroke = pinkgr,
+                Stroke = Pinkgr,
                 Opacity = 0,
             };
             BodyLine = new Path()
@@ -298,6 +297,10 @@ namespace CircleClickingGame
         public async void Spawn()
         {
             Stopwatch lifetime = new Stopwatch();
+
+            double dur = Length / (Multiplier * 100 * SV) * Engine.BPM; // duration has to be calculated when spawning because of timing points being set on the go
+            Duration duration = new Duration(TimeSpan.FromMilliseconds((int)dur));
+
             lifetime.Start();
             await CircleLife();
             CircleAfterLife();
@@ -306,55 +309,53 @@ namespace CircleClickingGame
                 await Task.Delay(1);
             }
             lifetime.Stop();
-            wasFollowed = true;
-            endWasHit = true;
+            WasFollowed = true;
+            EndWasHit = true;
             Engine.MainWindow.PlayArea.Children.Add(SliderBall);
             Engine.MainWindow.PlayArea.Children.Add(SliderBallHitbox);
             //
             Engine.MainWindow.PlayArea.Children.Remove(MainCircle);
             //
+            WhichRepeat = 1;
+
             if (Repeat < 2)
             {
-                await SliderAnimation(BodyPG);
+                await SliderAnimation(BodyPG, duration);
             }
             else
-            {
+            {              
                 for (int i = 1; i <= Repeat; i++)
                 {
                     if (i == Repeat)
                     {
-
                         StartCircle.Stroke = Brushes.White;
                         StartCircle.StrokeThickness = 4;
                         EndCircle.Stroke = Brushes.White;
-                        EndCircle.Stroke = Brushes.White;
+                        EndCircle.StrokeThickness = 4;
                     }
                     else if (i < Repeat - 1)
                     {
-                        StartCircle.StrokeThickness = 4;
+                        StartCircle.StrokeThickness = 7;
                         StartCircle.Stroke = new SolidColorBrush(Colors.Red);
                     }
 
                     if (i % 2 == 1)
                     {
-                        await SliderAnimation(BodyPG);
+                        await SliderAnimation(BodyPG, duration);
                     }
                     else
                     {
-                        await SliderAnimation(ReversedBodyPG);
+                        await SliderAnimation(ReversedBodyPG, duration);
                     }
+                    WhichRepeat++;
                 }
             }
             AnimationDone();
             ResultCheck();
 
         }
-        async Task SliderAnimation(PathGeometry SliderPath)
-        {
-
-            double dur = Length / (Multiplier * 100 * SV) * Engine.BPM;
-            Duration duration = new Duration(TimeSpan.FromMilliseconds((int)(dur / Repeat) + 10));
-
+        async Task SliderAnimation(PathGeometry SliderPath, Duration duration)
+        {           
             TranslateTransform animatedTranslateTransform = new TranslateTransform();
             SliderBall.RenderTransform = animatedTranslateTransform;
             DoubleAnimationUsingPath translateXAnimation = new DoubleAnimationUsingPath();
@@ -371,11 +372,10 @@ namespace CircleClickingGame
             Storyboard.SetTarget(translateYAnimation, SliderBall);
             Storyboard.SetTargetProperty(translateYAnimation, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
 
-            // Create a Storyboard to contain and apply the animations.
-
 
             TranslateTransform animatedTranslateTransform1 = new TranslateTransform();
             SliderBallHitbox.RenderTransform = animatedTranslateTransform1;
+
             DoubleAnimationUsingPath translateXAnimation1 = new DoubleAnimationUsingPath();
             translateXAnimation1.PathGeometry = SliderPath;
             translateXAnimation1.Duration = duration;
@@ -390,6 +390,7 @@ namespace CircleClickingGame
             Storyboard.SetTarget(translateYAnimation1, SliderBallHitbox);
             Storyboard.SetTargetProperty(translateYAnimation1, new PropertyPath("(UIElement.RenderTransform).(TranslateTransform.Y)"));
 
+
             Storyboard pathAnimationStoryboard = new Storyboard();
             pathAnimationStoryboard.Completed += PathAnimationStoryboard_Completed;
 
@@ -399,15 +400,23 @@ namespace CircleClickingGame
             pathAnimationStoryboard.Children.Add(translateYAnimation1);
 
             pathAnimationStoryboard.Begin();
-            isInAnimation = true;
+            IsInAnimation = true;
 
             DispatcherTimer dispatcherTimer = new DispatcherTimer();
             dispatcherTimer.Tick += DispatcherTimer_Tick;
             dispatcherTimer.Interval = TimeSpan.FromMilliseconds(Engine.BPM / Engine.SliderTickrate);
             dispatcherTimer.Start();
             WasTicked = false;
-            while (isInAnimation)
+            while (IsInAnimation)
             {
+                if(Engine.AnyButtonHeld && SliderBallHitbox.IsMouseDirectlyOver)
+                {
+                    SliderBallHitbox.Stroke = Brushes.White;
+                }
+                else
+                {
+                    SliderBallHitbox.Stroke = Brushes.Transparent;
+                }
                 await Task.Delay(1);
             }
             dispatcherTimer.Stop();
@@ -424,14 +433,14 @@ namespace CircleClickingGame
             else
             {
                 SliderBall.Fill = new SolidColorBrush(Colors.Red);
-                wasFollowed = false;
+                WasFollowed = false;
                 Engine.player.ComboBreak();
             }
         }
 
         private void PathAnimationStoryboard_Completed(object? sender, EventArgs e)
         {
-            isInAnimation = false;
+            IsInAnimation = false;
             if (SliderBallHitbox.IsMouseDirectlyOver && Engine.AnyButtonHeld)
             {
                 Engine.player.AddScore(30);
@@ -439,7 +448,15 @@ namespace CircleClickingGame
             else
             {
                 SliderBall.Fill = new SolidColorBrush(Colors.Red);
-                endWasHit = false;
+                if(WhichRepeat != Repeat)
+                {
+                    Engine.player.ComboBreak();
+                    WasFollowed = false;
+                }
+                else
+                {
+                    EndWasHit = false;
+                }              
             }
         }
         async void AnimationDone()
@@ -508,7 +525,7 @@ namespace CircleClickingGame
             sw.Stop();
             if (isAlive)
             {
-                circleWasHit = false;
+                CircleWasHit = false;
                 Engine.player.ComboBreak();
             }
             isAlive = false;
@@ -520,9 +537,9 @@ namespace CircleClickingGame
             int score = 0;
             if (!WasTicked)
             {
-                wasFollowed = circleWasHit || endWasHit;
+                WasFollowed = CircleWasHit || EndWasHit;
             }
-            bool[] res = new bool[] { circleWasHit, wasFollowed, endWasHit };
+            bool[] res = new bool[] { CircleWasHit, WasFollowed, EndWasHit };
             for (int i = 0; i < res.Length; i++)
             {
                 if (res[i])
@@ -592,15 +609,14 @@ namespace CircleClickingGame
                 if (sw.ElapsedMilliseconds >= Preempt - HitWindow50 && sw.ElapsedMilliseconds <= Preempt + HitWindow50)
                 {
                     isAlive = false;
-                    circleWasHit = true;
+                    CircleWasHit = true;
                     return;
                 }
                 else
                 {
-                    circleWasHit = false;
+                    CircleWasHit = false;
                     isAlive = false;
                     Engine.player.ComboBreak();
-
                 }
             }
         }

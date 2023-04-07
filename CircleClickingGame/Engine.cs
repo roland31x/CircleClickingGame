@@ -67,8 +67,8 @@ namespace CircleClickingGame
         public static bool MButton1IsHeld = false;
         public static bool MButton2IsHeld = false;
         public static bool AnyButtonHeld { get { return Button1IsHeld || Button2IsHeld || MButton1IsHeld || MButton2IsHeld; } }
-        static PlayerStats p = new PlayerStats(0);
-        public static PlayerStats player { get { return p; } }
+        static PlayerStats _player = PlayerStats.Player;
+        public static PlayerStats player { get { return _player; } }
         public static int SpawnedObj;
 
         public static void MainInit(MainWindow m)
@@ -349,9 +349,10 @@ namespace CircleClickingGame
                 StatsUpdate(true);
                 return true;
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 MessageBox.Show("Failed to load map.");
+                MessageBox.Show(ex.Message);
                 return false;
             }
         }

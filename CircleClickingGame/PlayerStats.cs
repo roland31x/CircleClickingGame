@@ -10,29 +10,32 @@ using System.Windows;
 
 namespace CircleClickingGame
 {
-    public class PlayerStats : INotifyPropertyChanged
+    class PlayerStats : INotifyPropertyChanged
     {
+        static PlayerStats _singleton = new PlayerStats(0);
+        public static PlayerStats Player { get { return _singleton; } }
+
         Visibility _visibility;
         public Visibility StatsVisibility { get { return _visibility; } private set { _visibility = value; OnPropertyChanged(); } }
 
         double _hp;
-        int _score;
-        int _combo;
-        string _acc;
-        public string ComboString { get { return 'x' + Combo.ToString(); } set { OnPropertyChanged(); } }
         public double HP { get { return _hp; } private set { _hp = value; OnPropertyChanged(); } }
+        int _score;
         public int Score { get { return _score; } private set { _score = value; OnPropertyChanged(); } }
-        public int Combo { get { return _combo; } private set { _combo = value; ComboString = ""; } }
+        int _combo;
+        public int Combo { get { return _combo; } private set { _combo = value; ComboString = value.ToString(); } }
+        public string ComboString { get { return 'x' + _combo.ToString();} private set { _ = value; OnPropertyChanged(); } }
         public int ObjectsHit300 { get; private set; }
         public int ObjectsHit100 { get; private set; }
         public int ObjectsHit50 { get; private set; }
         public int ObjectsMiss { get; private set; }
+        string _acc;
         public string Accuracy { get { return _acc; } private set { _acc = value; OnPropertyChanged(); } }
         public int TotalObj { get; private set; }
         public int MaxCombo { get; private set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
-        public PlayerStats(int TotalObj)
+        PlayerStats(int TotalObj)
         {
             StatsVisibility = Visibility.Collapsed;
             MaxCombo = 0;
