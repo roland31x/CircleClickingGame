@@ -108,6 +108,14 @@ namespace CircleClickingGame
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
+            if(e.Key == Key.Escape)
+            {
+                if(MessageBox.Show("You sure you want to quit?", "Quit?", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    this.Close();
+                }
+                else { return; }
+            }
             if (e.IsRepeat)
             {
                 return;
@@ -137,20 +145,21 @@ namespace CircleClickingGame
 
         private async void BeatMap_Click(object sender, RoutedEventArgs e)
         {
-            Engine.Default();           
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Title = "Select the beatmap";
-            openFileDialog.InitialDirectory = Engine.OsuSongsPath;        
-            openFileDialog.Filter = "osu! files (*.osu)|*.osu";
-            openFileDialog.FilterIndex = 1;
-            openFileDialog.RestoreDirectory = false;
+            Engine.Default();
+            OpenFileDialog openFileDialog = new OpenFileDialog()
+            {
+                Title = "Select the beatmap",
+                InitialDirectory = Engine.OsuSongsPath,
+                Filter = "osu! files (*.osu)|*.osu",
+                FilterIndex = 1,
+                RestoreDirectory = false,
+            };          
             openFileDialog.ShowDialog();
             Engine.MapPath = openFileDialog.FileName;
             Engine.MapName = openFileDialog.FileName.Split(@"\").Last().Split('.').First();
             if (Engine.LoadMap())
             {
                 StartButton.Visibility = Visibility.Visible;
-                PauseButton.Content = "STOP";
             }
             else
             {
@@ -174,26 +183,16 @@ namespace CircleClickingGame
 
             PauseButton.Visibility = Visibility.Visible;
 
+            BeatmapButton.Visibility = Visibility.Collapsed;
+
+            SettingsButton.Visibility = Visibility.Collapsed;
+
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            if (Engine.isPaused)
-            {
-                Engine.MediaPlayer.Play();
-
-                Engine.Stopwatch.Start();
-                Engine.isPaused = false;
-                (sender as Button).Content = "STOP";
-            }
-            else
-            {
-                Engine.MediaPlayer.Pause();
-
-                Engine.Stopwatch.Stop();
-                Engine.isPaused = true;
-                (sender as Button).Content = "RESUME";
-            }
+            Engine.Abort = true;
+            PauseButton.IsEnabled = false;
         }
 
         private void SettingsButton_Click(object sender, RoutedEventArgs e)

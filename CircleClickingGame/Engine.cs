@@ -16,6 +16,8 @@ using System.Windows.Threading;
 using System.Globalization;
 using Path = System.Windows.Shapes.Path;
 using System.Windows.Media.Animation;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace CircleClickingGame
 {
@@ -24,10 +26,11 @@ namespace CircleClickingGame
         public static MainWindow MainWindow;       
         public static Random rng;
         
-        //public static DispatcherTimer Timer; // wip
+        public static DispatcherTimer Timer; // wip
         //public static List<ClickableCircle> Circles;        
         public static List<HitObjectEvent> HitObjects;
         public static List<TimingPoint> TimingPoints;
+        public static List<BreakEvent> BreakEvents;
         
         
         public static Stopwatch Stopwatch;
@@ -146,12 +149,17 @@ namespace CircleClickingGame
             Abort = true;
             isPaused = false;
             rng = new Random();
-            //Timer = new DispatcherTimer();
+
+            Timer = new DispatcherTimer();
+            Timer.Tick += Timer_Tick;
+            Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 100);
+
             HitObjects = new List<HitObjectEvent>();
             TimingPoints = new List<TimingPoint>();
-            //Timer.Tick += Timer_Tick;
+            BreakEvents = new List<BreakEvent>();
+
             Stopwatch = new Stopwatch();
-            //Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
+            
             MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
             MainWindow.PauseButton.Visibility = Visibility.Collapsed;
             MediaPlayer = new MediaPlayer();
@@ -168,25 +176,33 @@ namespace CircleClickingGame
             Abort = true;
             isPaused = false;
             rng = new Random();
-            //Timer = new DispatcherTimer();
+
             HitObjects = new List<HitObjectEvent>();
             TimingPoints = new List<TimingPoint>();
-            //Timer.Tick += Timer_Tick;
+            BreakEvents = new List<BreakEvent>();
+
             Stopwatch = new Stopwatch();
-            //Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 1);
+
+            Timer = new DispatcherTimer();
+            Timer.Tick += Timer_Tick;
+            Timer.Interval = new TimeSpan(0, 0, 0, 0, milliseconds: 100);
+
             MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
             MainWindow.PauseButton.Visibility = Visibility.Collapsed;
             MediaPlayer = new MediaPlayer();
             player.ReInit(HitObjects.Count);
             LoadMap();
-            //player.Hide();
-
         }
         public static void StatsUpdate(bool OK)
         {
             if (OK)
             {
-                MainWindow.StatsLabel.Content = $"CS : {CircSize} {Environment.NewLine}AR : {AR} {Environment.NewLine}OD : {OD} {Environment.NewLine}Circles: {HitObjects.Count}";
+                MainWindow.StatsLabel.Content = $"CS : {CircSize} " +
+                    $"{Environment.NewLine}AR : {AR} " +
+                    $"{Environment.NewLine}OD : {OD} " +
+                    $"{Environment.NewLine}HP: {HP} " +
+                    $"{Environment.NewLine}Circles: {HitObjects.Count} ";
+
             }
             else
             {
@@ -196,7 +212,7 @@ namespace CircleClickingGame
 
         private static void Timer_Tick(object? sender, EventArgs e)
         {
-            //(sender as DispatcherTimer).
+            player.Drain();
         }
         public static BitmapImage GetImageAfterScore(int score)
         {
@@ -213,17 +229,18 @@ namespace CircleClickingGame
             int k = 0;
             SpawnedObj = 0;
             Stopwatch.Start();
+            Timer.Start();
             MediaPlayer.Position = new TimeSpan(0, 0, 0, 0, 0);
             while(j < HitObjects.Count)
             {
+                player.Progress();
                 SpawnedObj = j;
                 if (Abort)
                 {
-                    MediaPlayer.Stop();
-                    //MessageBox.Show("Aborted past beatmap.");
+                    await AbortBeatmap();
                     return;
                 }
-                if (k < TimingPoints.Count && Stopwatch.ElapsedMilliseconds >= TimingPoints[k].Time)
+                if (k < TimingPoints.Count && Stopwatch.ElapsedMilliseconds >= TimingPoints[k].Time - Preempt)
                 {
                     TimingPoints[k].Set();
                     k++;
@@ -232,14 +249,14 @@ namespace CircleClickingGame
                 {
                     HitObjects[j].Spawn();
                     j++;
-                }
-                
+                }               
+
                 else await Task.Delay(1);
             }
             if (Abort)
             {
                 MediaPlayer.Stop();
-                //MessageBox.Show("Aborted past beatmap.");
+                await AbortBeatmap();
                 return;
             }
             
@@ -249,9 +266,27 @@ namespace CircleClickingGame
             PlayerScore.ShowDialog();
             await Task.Delay(500);
             Stopwatch.Stop();
+            Timer.Stop();
+            Finished();
+        }
+        static async Task AbortBeatmap()
+        {
+            MediaPlayer.Stop();
+            //MessageBox.Show("Aborted past beatmap.");
+            MainWindow.PauseButton.Content = "Aborting...";
+            await Task.Delay(3000);
+            Finished();
+            MainWindow.PauseButton.Content = "Abort";
+            MainWindow.PauseButton.IsEnabled = true;
+        }
+        static void Finished()
+        {
             Engine.SoftReset();
             MainWindow.StartButton.Visibility = Visibility.Visible;
+            MainWindow.BeatmapButton.Visibility = Visibility.Visible;
+            MainWindow.SettingsButton.Visibility = Visibility.Visible;
             MainWindow.PauseButton.Visibility = Visibility.Collapsed;
+            
         }
         public static bool LoadMap()
         {
@@ -356,5 +391,5 @@ namespace CircleClickingGame
                 return false;
             }
         }
-    }   
+    }
 }

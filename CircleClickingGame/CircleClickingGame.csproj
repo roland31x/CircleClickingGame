@@ -8,6 +8,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\DS-DIGII.TTF" />
+    <None Remove="Assets\Space Crusaders Italic.ttf" />
     <None Remove="Images\cursor.png" />
     <None Remove="Images\hit100.png" />
     <None Remove="Images\hit50.png" />
@@ -17,6 +19,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\DS-DIGII.TTF">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Space Crusaders Italic.ttf" />
     <Resource Include="Images\cursor.png" />
     <Resource Include="Images\hit100.png" />
     <Resource Include="Images\hit50.png" />

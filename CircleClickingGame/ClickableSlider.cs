@@ -299,7 +299,7 @@ namespace CircleClickingGame
             Stopwatch lifetime = new Stopwatch();
 
             double dur = Length / (Multiplier * 100 * SV) * Engine.BPM; // duration has to be calculated when spawning because of timing points being set on the go
-            Duration duration = new Duration(TimeSpan.FromMilliseconds((int)dur));
+            
 
             lifetime.Start();
             await CircleLife();
@@ -309,6 +309,7 @@ namespace CircleClickingGame
                 await Task.Delay(1);
             }
             lifetime.Stop();
+            Duration duration = new Duration(TimeSpan.FromMilliseconds((int)dur));
             WasFollowed = true;
             EndWasHit = true;
             Engine.MainWindow.PlayArea.Children.Add(SliderBall);

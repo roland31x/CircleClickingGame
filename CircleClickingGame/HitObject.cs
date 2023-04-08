@@ -12,6 +12,7 @@ using System.Windows.Shapes;
 using System.Windows;
 using System.Windows.Media.Animation;
 using System.Windows.Threading;
+using System.Threading;
 
 namespace CircleClickingGame
 {
@@ -40,6 +41,32 @@ namespace CircleClickingGame
             }
         }
     }
+    public class BreakEvent
+    {
+        public int StartTime { get; set; }
+        public int EndTime { get; set; }
+        DispatcherTimer Timer { get; set; }
+        public BreakEvent(int start, int end)
+        {
+            StartTime = start;
+            EndTime = end;
+            Timer = new DispatcherTimer();
+            Timer.Interval = TimeSpan.FromMilliseconds(EndTime - StartTime);
+            Timer.Tick += Timer_Tick;
+        }
+
+        private void Timer_Tick(object? sender, EventArgs e)
+        {
+            Engine.Timer.Start();
+            Timer.Stop();
+        }
+
+        public async void Start()
+        {
+            Engine.Timer.Stop();
+            Timer.Start();
+        }
+    }
     public class TimingPoint
     {
         public int Time { get; }
@@ -57,6 +84,7 @@ namespace CircleClickingGame
             if(BeatLength >= 0)
             {
                 Engine.BPM = BeatLength;
+                Engine.SliderVelocity = 1;
             }
             else
             {

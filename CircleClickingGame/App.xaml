@@ -9,5 +9,26 @@
             <GradientStop Color="#FFFF96EB"/>
             <GradientStop Color="#FF7A77FF" Offset="1"/>
         </LinearGradientBrush>
+        <FontFamily x:Key="DigiLCD">/CircleClickingGame;component/Assets/DS-DIGII.ttf#DS-Digital</FontFamily>
+        <FontFamily x:Key="SpaceCrusaders">/CircleClickingGame;component/Assets/Space Crusaders Italic.ttf#Space Crusaders</FontFamily>
+        <Style x:Key="LCDStyle" TargetType="Canvas">
+            <Style.Resources>
+                <Style TargetType="Label">
+                    <Setter Property="FontFamily" Value="{StaticResource DigiLCD}"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style x:Key="SpaceCrusadersStyle" TargetType="Canvas">
+            <Style.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="FontFamily" Value="{StaticResource SpaceCrusaders}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Style.Resources>
+        </Style>
     </Application.Resources>
 </Application>
