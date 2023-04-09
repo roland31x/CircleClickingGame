@@ -27,9 +27,39 @@ namespace CircleClickingGame
             X100sbox.Content = Engine.player.ObjectsHit100.ToString() + "x";
             X50sbox.Content = Engine.player.ObjectsHit50.ToString() + "x";
             Missesbox.Content = Engine.player.ObjectsMiss.ToString() + "x";
-            Combobox.Content = Engine.player.MaxCombo.ToString() + " / " + Engine.player.TotalObj;
+            Combobox.Content = "Max Combo: " + Engine.player.MaxCombo.ToString();
             Accuracybox.Content = "Accuracy: " + Engine.player.Accuracy;
             ScoreBox.Content = Engine.player.Score.ToString();
+            if (Engine.player.Acc >= 90 && Engine.player.ObjectsMiss == 0)
+            {
+                    ResultScore.Content = 'S';
+                    ResultScore.Foreground = Brushes.Orange;
+            }
+            else if (Engine.player.Acc >= 90 || (Engine.player.Acc >= 80 && Engine.player.ObjectsMiss == 0))
+            {
+                ResultScore.Content = 'A';
+                ResultScore.Foreground = Brushes.Green;
+            }
+            else if (Engine.player.Acc >= 80 || (Engine.player.Acc >= 70 && Engine.player.ObjectsMiss == 0))
+            {
+                ResultScore.Content = 'B';
+                ResultScore.Foreground = Brushes.Blue;
+            }
+            else if (Engine.player.Acc >= 60)
+            {
+                ResultScore.Content = 'C';
+                ResultScore.Foreground = Brushes.Pink;
+            }
+            else
+            {
+                ResultScore.Content = 'D';
+                ResultScore.Foreground = Brushes.Red;
+            }
+            if (Engine.player.HasFailed)
+            {
+                ResultScore.Content = 'F';
+                ResultScore.Foreground = Brushes.DarkRed;
+            }
         }
     }
 }

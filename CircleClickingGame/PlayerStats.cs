@@ -29,14 +29,15 @@ namespace CircleClickingGame
         public int ObjectsHit100 { get; private set; }
         public int ObjectsHit50 { get; private set; }
         public int ObjectsMiss { get; private set; }
-        string _acc;
-        public string Accuracy { get { return _acc; } private set { _acc = value; OnPropertyChanged(); } }
+        double _acc;
+        public double Acc { get { return _acc; } private set { _acc = value; Accuracy = string.Empty; } }
+        public string Accuracy { get { return Math.Round(Acc, 2).ToString() + '%'; } private set { _ = value; OnPropertyChanged(); } }
         public int TotalObj { get; private set; }
         public int MaxCombo { get; private set; }
         MediaPlayer mp { get { return Engine.MediaPlayer; } }
-        public double HPWidth { get { return HP / 100 * Engine.MainWindow.Width; } private set { _ = value; OnPropertyChanged(); } }
-        public double TimeLineWidth { get { return (mp.Position.TotalMilliseconds / (Engine.HitObjects.Last().Time - Engine.Preempt)) * Engine.MainWindow.Width; } private set { _ = value; OnPropertyChanged(); } }
-
+        public double HPWidth { get { try { return HP / 100 * Engine.MainWindow.Width; } catch (Exception) { return 0; } } private set { _ = value; OnPropertyChanged(); } }
+        public double TimeLineWidth { get { try { return (mp.Position.TotalMilliseconds / (Engine.HitObjects.Last().Time - Engine.Preempt)) * Engine.MainWindow.Width; } catch (Exception) { return 0; } } private set { _ = value; OnPropertyChanged(); } }
+        public bool HasFailed { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
         PlayerStats(int TotalObj)
         {
@@ -50,6 +51,7 @@ namespace CircleClickingGame
             ObjectsHit50 = 0;
             ObjectsMiss = 0;
             this.TotalObj = TotalObj;
+            HasFailed = false;
         }
         protected void OnPropertyChanged([CallerMemberName] string name = "")
         {
@@ -57,7 +59,7 @@ namespace CircleClickingGame
         }
         public void Drain()
         {
-            HP -= Engine.HP / 10;
+            HP -= Engine.HP / 150;
         }
         public void CalcStats()
         {
@@ -69,7 +71,8 @@ namespace CircleClickingGame
             if (HP <= 0)
             {
                 HP = 0;
-                // FAIL
+                HasFailed = true;
+                Engine.MainWindow.HPBar.Visibility = Visibility.Collapsed;
             }
             if (HP >= 100)
             {
@@ -81,11 +84,11 @@ namespace CircleClickingGame
             double ObjScore = ObjectsMiss + ObjectsHit50 + ObjectsHit100 + ObjectsHit300;
             if(ObjScore == 0)
             {
-                Accuracy = "100%";
+                Acc = 100;
                 return;
             }
             double acc = ((double)ObjectsHit300 + 0.66 * (double)ObjectsHit100 + 0.33 * (double)ObjectsHit50) / ObjScore;
-            Accuracy = Math.Round(acc * 100 , 2).ToString() + '%';
+            Acc = acc * 100;
         }
         public void Show()
         {
@@ -107,6 +110,7 @@ namespace CircleClickingGame
         }
         public void ReInit(int count)
         {
+            Engine.MainWindow.HPBar.Visibility = Visibility.Visible;
             StatsVisibility = Visibility.Collapsed;
             MaxCombo = 0;
             HP = 100;

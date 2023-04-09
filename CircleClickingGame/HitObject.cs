@@ -44,7 +44,7 @@ namespace CircleClickingGame
     public class BreakEvent
     {
         public int StartTime { get; set; }
-        public int EndTime { get; set; }
+        int EndTime { get; set; }
         DispatcherTimer Timer { get; set; }
         public BreakEvent(int start, int end)
         {
@@ -61,7 +61,7 @@ namespace CircleClickingGame
             Timer.Stop();
         }
 
-        public async void Start()
+        public void Start()
         {
             Engine.Timer.Stop();
             Timer.Start();

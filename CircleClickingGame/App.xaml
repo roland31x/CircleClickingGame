@@ -28,6 +28,9 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
+                <Style TargetType="Label">
+                    <Setter Property="FontFamily" Value="{StaticResource SpaceCrusaders}"/>
+                </Style>
             </Style.Resources>
         </Style>
     </Application.Resources>
