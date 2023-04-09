@@ -122,6 +122,7 @@ namespace CircleClickingGame
             ObjectsMiss = 0;
             AccCalc();
             this.TotalObj = count;
+            HasFailed = false;
         }
         public void Miss()
         {

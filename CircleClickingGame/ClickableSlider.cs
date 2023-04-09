@@ -226,7 +226,7 @@ namespace CircleClickingGame
                             Height = Engine.CS - 8,
                             Width = Engine.CS - 8,
                             Fill = Brushes.Black,
-                            Opacity = 0,
+                            Opacity = 1,
                         };
 
                         Canvas.SetTop(ToAdd, px.Y - ToAdd.Height / 2);
@@ -258,7 +258,7 @@ namespace CircleClickingGame
                             Height = Engine.CS - 10,
                             Width = Engine.CS - 10,
                             Fill = Brushes.Black,
-                            Opacity = 0,
+                            Opacity = 1,
                         };
                         Canvas.SetTop(ToAdd, px.Y - ToAdd.Height / 2);
                         Canvas.SetLeft(ToAdd, px.X - ToAdd.Width / 2);
@@ -324,7 +324,7 @@ namespace CircleClickingGame
                     Height = e.Height + 10,
                     Width = e.Width + 10,
                     Fill = Brushes.White,
-                    Opacity = 0,
+                    Opacity = 1,
                 };
                 TBodyLine.Add(c);
                 Canvas.SetLeft(c, Canvas.GetLeft(e) - 5);
@@ -512,6 +512,7 @@ namespace CircleClickingGame
             Canvas.SetZIndex(SliderBall, 1);
             Canvas.SetZIndex(EndCircle, 1);
             Canvas.SetZIndex(MainCircle, 1);
+
             Stopwatch fadeoutsw = new Stopwatch();
             fadeoutsw.Start();
             while (fadeoutsw.ElapsedMilliseconds < FadeOutTime)
@@ -522,17 +523,18 @@ namespace CircleClickingGame
                 //Body.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
                 //BodyLine.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime) - 0.4;
                 StartCircle.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
-                foreach (Ellipse e in TBody)
-                {
-                    e.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
-                }
-                foreach (Ellipse e in TBodyLine)
-                {
-                    e.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
-                }
+                //foreach (Ellipse e in TBody)
+                //{
+                //    e.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
+                //}
+                //foreach (Ellipse e in TBodyLine)
+                //{
+                //    e.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
+                //}              
                 await Task.Delay(1);
             }
             fadeoutsw.Stop();
+
             foreach (Ellipse e in TBody)
             {
                 Engine.MainWindow.PlayArea.Children.Remove(e);
@@ -556,15 +558,15 @@ namespace CircleClickingGame
             {
                 if (sw.ElapsedMilliseconds < FadeIn)
                 {
-                    double newOpacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
-                    foreach (Ellipse e in TBody)
-                    {
-                        e.Opacity = newOpacity;
-                    }
-                    foreach (Ellipse e in TBodyLine)
-                    {
-                        e.Opacity = newOpacity;
-                    }
+                    double newOpacity = ((double)sw.ElapsedMilliseconds / (double)FadeIn);
+                    //foreach (Ellipse e in TBody)
+                    //{
+                    //    e.Opacity = newOpacity;
+                    //}
+                    //foreach (Ellipse e in TBodyLine)
+                    //{
+                    //    e.Opacity = newOpacity;
+                    //}
                     EndCircle.Opacity = newOpacity;
                     MainCircle.Opacity = newOpacity;
                     ApproachCircle.Opacity = newOpacity;
@@ -577,7 +579,7 @@ namespace CircleClickingGame
                 ApproachCircle.Width = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
                 Canvas.SetTop(ApproachCircle, Ypos - ApproachCircle.Height / 2);
                 Canvas.SetLeft(ApproachCircle, Xpos - ApproachCircle.Width / 2);
-
+                //helper++;
                 await Task.Delay(1);
             }
             Engine.MainWindow.PlayArea.Children.Remove(ApproachCircle);
