@@ -18,13 +18,14 @@ namespace CircleClickingGame
 {
     public class HitObjectEvent
     {
+        public static double ScaleMultiplier { get { return Engine.ScaleMultiplier; } }
         Point coords { get; }
         public int Time { get; }
         int Type { get; }
         string[] Props { get; }
         public HitObjectEvent(int x, int y, int time, int type, string[] pars)
         {
-            coords = new Point(x, y);
+            coords = new Point(x * ScaleMultiplier, y * ScaleMultiplier);
             Time = time;
             Type = type;
             Props = pars;

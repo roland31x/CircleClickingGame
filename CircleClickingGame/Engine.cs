@@ -73,6 +73,8 @@ namespace CircleClickingGame
         public static PlayerStats player { get { return _player; } }
         public static int SpawnedObj;
 
+        public static double ScaleMultiplier { get { return MainWindow.PlayArea.Width / 640d; } }
+
         public static void MainInit(MainWindow m)
         {           
             MainWindow = m;
@@ -303,7 +305,9 @@ namespace CircleClickingGame
                     return false;
                 }
                 MainWindow.label1.Content = MapName;
+
                 MapLoader.Load();
+
                 BPM = TimingPoints[0].BeatLength;
                 Preempt = 1250 - 750 * ((AR - 5) / 5);
                 FadeIn = 800 - 500 * ((AR - 5) / 5);
@@ -311,8 +315,8 @@ namespace CircleClickingGame
                 HitWindow100 = -8 * (OD - 20.4375); // base val 17.4375
                 HitWindow50 = -10 * (OD - 24.95); // base val 19.95
 
-                CS = 109 - (9 * CircSize);
-                //Abort = false;
+                CS = (109 - (9 * CircSize)) * ScaleMultiplier; // or Y doesn't matter
+
                 DiffMultiplier = Math.Round((double)((HP + CircSize + OD + (double)Math.Clamp(HitObjects.Count / (double)(HitObjects.Last().Time / 1000) * 8,0,16)) / 38d) * 5);
                 player.ReInit(HitObjects.Count);
                 StatsUpdate(true);

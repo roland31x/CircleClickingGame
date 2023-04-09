@@ -26,11 +26,86 @@ namespace CircleClickingGame
     {
         public MainWindow()
         {
-            InitializeComponent();
+            InitializeComponent();           
             MainInit();
         }
+
+        private void MainWindow_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            MainWindow_Loaded(sender, e);
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            double Scale = ActualWidth / ButtonCanvas.Width;
+            PlayArea.Background = Brushes.Beige;
+            PlayArea.Height = 0.8 * ActualHeight;
+            PlayArea.Width = (4d / 3d) * PlayArea.Height;
+            Canvas.SetTop(PlayArea, (ActualHeight - PlayArea.Height) / 2);
+            Canvas.SetLeft(PlayArea, (ActualWidth - PlayArea.Width) / 2);
+
+
+            ResizeButtons(Scale);
+            ResizeHud(Scale);
+
+
+            Engine.SoftReset();
+        }
+        void ResizeButtons(double Scale)
+        {            
+            ButtonCanvas.Height = ActualHeight;
+            ButtonCanvas.Width = ActualWidth;
+            foreach(Button b in ButtonCanvas.Children.OfType<Button>())
+            {
+                Canvas.SetTop(b, Canvas.GetTop(b) * Scale);
+                Canvas.SetLeft(b, Canvas.GetLeft(b) * Scale);
+                b.Width = b.Width * Scale;
+                b.Height = b.Height * Scale;
+                b.FontSize = b.FontSize * Scale;
+            }
+        }
+        void ResizeHud(double Scale)
+        {            
+            foreach (Label b in PlayerCanvas.Children.OfType<Label>())
+            {
+                b.FontSize = b.FontSize * Scale;
+
+                Canvas.SetTop(b, Canvas.GetTop(b) * Scale);
+                if (Canvas.GetLeft(b) != 0)
+                {                   
+                    Canvas.SetLeft(b, Canvas.GetLeft(b) * Scale);
+                }
+                else
+                {
+                    Canvas.SetRight(b, Canvas.GetRight(b) * Scale);
+                }               
+
+            }
+            Canvas.SetTop(label1, Canvas.GetTop(label1) * Scale);
+            Canvas.SetLeft(label1, Canvas.GetLeft(label1) * Scale);
+
+            label1.Width = label1.Width * Scale;
+            label1.Height = label1.Height * Scale;
+            label1.FontSize = label1.FontSize * Scale;
+
+            MKey1Label.Width *= Scale;
+            MKey2Label.Width *= Scale;
+            Key1Label.Width *= Scale;
+            Key2Label.Width *= Scale;
+            Key2Label.Height *= Scale;
+            Key1Label.Height *= Scale;
+            MKey2Label.Height *= Scale;
+            MKey1Label.Height *= Scale;
+
+
+            PlayerCanvas.Height = ActualHeight;
+            PlayerCanvas.Width = ActualWidth;
+        }
+
         void MainInit()
         {
+            Loaded += MainWindow_Loaded;
+            SizeChanged += MainWindow_SizeChanged;
             StartButton.Visibility = Visibility.Collapsed;
             PauseButton.Visibility = Visibility.Collapsed;
             MouseWheel += MainWindow_MouseWheel;
@@ -45,7 +120,6 @@ namespace CircleClickingGame
 
         private void MainWindow_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            int i = 0;
             if (e.LeftButton == MouseButtonState.Released)
             {
                 Engine.MButton1IsHeld = false;

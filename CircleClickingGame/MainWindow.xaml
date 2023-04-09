@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CircleClickingGame"
         mc:Ignorable="d"
-        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="720" Width="1280"
+        ResizeMode="NoResize"
         WindowStyle="None">
     <Window.DataContext>
         <local:Engine/>
@@ -28,16 +28,16 @@
         </Canvas>
         <Label x:Name="VolumeLabel" Content="" Canvas.Left="579" Canvas.Top="611" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="122" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"/>
         <Canvas x:Name="PlayerCanvas" Height="720" Width="1280" Visibility="{Binding Path=player.StatsVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LCDStyle}" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <Label x:Name="ComboLabel" Content="{Binding Path=player.Combo, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Left="53" Canvas.Top="616" Height="64" Width="240" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="55" VerticalContentAlignment="Center"/>
-            <Label x:Name="AccuracyLabel" Content="{Binding Path=player.Accuracy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Left="983" Canvas.Top="71" Height="84" Width="279" Foreground="White" FontSize="55" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Right"/>
-            <Label x:Name="ScoreLabel" Content="{Binding Path=player.Score, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Left="826" Height="64" Width="436" Foreground="White" FontSize="50" VerticalContentAlignment="Bottom" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Right"/>
+            <Label x:Name="ComboLabel" Content="{Binding Path=player.Combo, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Left="53" Canvas.Top="616" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="55" VerticalContentAlignment="Center"/>
+            <Label x:Name="AccuracyLabel" Content="{Binding Path=player.Accuracy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Right="10" Canvas.Top="71" Foreground="White" FontSize="55" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Right"/>
+            <Label x:Name="ScoreLabel" Content="{Binding Path=player.Score, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Right="10" Foreground="White" FontSize="50" VerticalContentAlignment="Bottom" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Right"/>
             <Label x:Name="Key1Label" Content="" Canvas.Left="1194" Canvas.Top="218" HorizontalAlignment="Center" VerticalAlignment="Top" Width="60" Height="59" />
             <Label x:Name="Key2Label" Content="" Canvas.Left="1194" Canvas.Top="285" HorizontalAlignment="Center" VerticalAlignment="Top" Width="60" Height="59" />
             <Label x:Name="MKey1Label" Content="" Canvas.Left="1194" Canvas.Top="352" Width="60" Height="59" HorizontalAlignment="Center" VerticalAlignment="Top" />
             <Label x:Name="MKey2Label" Content="" Canvas.Left="1194" Canvas.Top="419" Width="60" Height="59" HorizontalAlignment="Center" VerticalAlignment="Top" />
             <Label x:Name="HPBar" Height="20" Width="{Binding Path=player.HPWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="700" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Red"/>
             <Label x:Name="TimeProgress" Height="10" Width="{Binding Path=player.TimeLineWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Left="0" Canvas.Top="0" Background="Green" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-            <Label x:Name="ComboLabelX" Content="x" Canvas.Left="36" Canvas.Top="638" Height="34" Width="26" Foreground="White" FontSize="28" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Label x:Name="ComboLabelX" Content="x" Canvas.Left="36" Canvas.Top="638" Foreground="White" FontSize="28" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         </Canvas>
 
     </Canvas>

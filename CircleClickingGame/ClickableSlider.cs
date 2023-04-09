@@ -14,6 +14,7 @@ using System.Windows.Threading;
 using System.Windows;
 using System.Security.Cryptography;
 using System.Security.Policy;
+using System.Reflection.Metadata.Ecma335;
 
 namespace CircleClickingGame
 {
@@ -23,8 +24,10 @@ namespace CircleClickingGame
         Ellipse SliderBallHitbox { get; set; }
         Ellipse EndCircle { get; set; }
         Ellipse StartCircle { get; set; }
-        Path Body { get; set; }
-        Path BodyLine { get; set; }
+        //Path Body { get; set; }
+        //Path BodyLine { get; set; }
+        List<Ellipse> TBody { get; set; }
+        List<Ellipse> TBodyLine { get; set; }
         public double endXpos { get; private set; }
         public double endYpos { get; private set; }
         Point Endpoint { get { return new Point(endXpos, endYpos); } }
@@ -39,6 +42,7 @@ namespace CircleClickingGame
         bool EndWasHit { get; set; }
         bool WasTicked { get; set; }
         static LinearGradientBrush Pinkgr { get { return (LinearGradientBrush)App.Current.FindResource("GradientPinkPurple"); } }
+        static SolidColorBrush PurpleC { get { return (SolidColorBrush)App.Current.FindResource("NicePurple"); } }
         static double Multiplier { get { return Engine.SliderMultiplier; } }
         static double SV { get { return Engine.SliderVelocity; } }
         public ClickableSlider(int x, int y, string[] props)
@@ -48,7 +52,8 @@ namespace CircleClickingGame
             Length = double.Parse(props[2]);
             Repeat = double.Parse(props[1]);
 
-            
+            TBody = new List<Ellipse>();
+            TBodyLine = new List<Ellipse>();
 
             MainCircle = new Ellipse()
             {
@@ -89,8 +94,6 @@ namespace CircleClickingGame
                 Fill = Pinkgr,
                 Opacity = 0,
             };
-
-
             
             BuildBody(x, y, props);
 
@@ -181,7 +184,7 @@ namespace CircleClickingGame
                     {
                         double xc = double.Parse(curvepts[i].Split(':')[0].Trim());
                         double yc = double.Parse(curvepts[i].Split(':')[1].Trim());
-                        Point toAdd = new Point(xc, yc);
+                        Point toAdd = new Point(xc * Engine.ScaleMultiplier, yc * Engine.ScaleMultiplier);
 
                         if (Last != null && toAdd == Last)
                         {
@@ -203,9 +206,9 @@ namespace CircleClickingGame
                     {
                         Curve[i] = pts[i];
                     }                   
-                    for (double t = 0.01; t <= 1; t += 0.01)
+                    for (double t = 0.05; t <= 1; t += 0.05)
                     {
-                        Point PX = CurveMaths.beziercoord(Curve, t);
+                        Point px = CurveMaths.beziercoord(Curve, t);
                         if (done && !ellipsedrew)
                         {
                             Point pos = CurveMaths.beziercoord(Curve, 1);
@@ -215,8 +218,21 @@ namespace CircleClickingGame
                         }
                         LineSegment ls = new LineSegment()
                         {
-                            Point = PX,
+                            Point = px,
                         };
+
+                        Ellipse ToAdd = new Ellipse()
+                        {
+                            Height = Engine.CS - 8,
+                            Width = Engine.CS - 8,
+                            Fill = Brushes.Black,
+                            Opacity = 0,
+                        };
+
+                        Canvas.SetTop(ToAdd, px.Y - ToAdd.Height / 2);
+                        Canvas.SetLeft(ToAdd, px.X - ToAdd.Width / 2);
+                        TBody.Add(ToAdd);
+
                         pathFigure.Segments.Add(ls);
                     }
                 }
@@ -230,17 +246,28 @@ namespace CircleClickingGame
                 {                   
                     double xc = double.Parse(curvepts[i].Split(':')[0].Trim());
                     double yc = double.Parse(curvepts[i].Split(':')[1].Trim());
-                    pts[i] = new Point(xc, yc);
+                    pts[i] = new Point(xc * Engine.ScaleMultiplier, yc * Engine.ScaleMultiplier);
                     Point[] calc = new Point[] { pts[i - 1], pts[i] };
                     for (double t = 0.05; t <= 1; t+= 0.05)
                     {
                         Point px = CurveMaths.beziercoord(calc, t);
                         pathFigure.Segments.Add(new LineSegment() { Point = px });
+
+                        Ellipse ToAdd = new Ellipse()
+                        {
+                            Height = Engine.CS - 10,
+                            Width = Engine.CS - 10,
+                            Fill = Brushes.Black,
+                            Opacity = 0,
+                        };
+                        Canvas.SetTop(ToAdd, px.Y - ToAdd.Height / 2);
+                        Canvas.SetLeft(ToAdd, px.X - ToAdd.Width / 2);
+                        TBody.Add(ToAdd);
                     }                  
                     if (i == curvepts.Length - 1)
                     { 
-                        endXpos = xc;
-                        endYpos = yc;
+                        endXpos = xc * Engine.ScaleMultiplier;
+                        endYpos = yc * Engine.ScaleMultiplier;
                     }
                 }
             }
@@ -275,24 +302,42 @@ namespace CircleClickingGame
             BodyPG = pathGeometry;
             BodyPG.Freeze();
 
-            Body = new Path()
+            //Body = new Path()
+            //{
+            //    Data = pathGeometry,
+            //    StrokeThickness = Engine.CS - 8,
+            //    Stroke = Pinkgr,
+            //    Opacity = 0,
+            //};
+            //BodyLine = new Path()
+            //{
+            //    Data = pathGeometry,
+            //    StrokeThickness = Engine.CS,
+            //    Stroke = Brushes.White,
+            //    Opacity = 0,
+            //};
+
+            foreach (Ellipse e in TBody)
             {
-                Data = pathGeometry,
-                StrokeThickness = Engine.CS - 8,
-                Stroke = Pinkgr,
-                Opacity = 0,
-            };
-            BodyLine = new Path()
-            {
-                Data = pathGeometry,
-                StrokeThickness = Engine.CS,
-                Stroke = Brushes.White,
-                Opacity = 0,
-            };
-            Canvas.SetZIndex(Body, -1);
-            Engine.MainWindow.PlayArea.Children.Add(Body);
-            Canvas.SetZIndex(BodyLine, -2);
-            Engine.MainWindow.PlayArea.Children.Add(BodyLine);
+                Ellipse c = new Ellipse()
+                {
+                    Height = e.Height + 10,
+                    Width = e.Width + 10,
+                    Fill = Brushes.White,
+                    Opacity = 0,
+                };
+                TBodyLine.Add(c);
+                Canvas.SetLeft(c, Canvas.GetLeft(e) - 5);
+                Canvas.SetTop(c, Canvas.GetTop(e) - 5);
+                Engine.MainWindow.PlayArea.Children.Add(c);
+                Engine.MainWindow.PlayArea.Children.Add(e);
+                Canvas.SetZIndex(e, -1);
+                Canvas.SetZIndex(c, -2);
+            }
+            //Canvas.SetZIndex(Body, -1);
+            //Engine.MainWindow.PlayArea.Children.Add(Body);
+            //Canvas.SetZIndex(BodyLine, -2);
+            //Engine.MainWindow.PlayArea.Children.Add(BodyLine);
         }
         public async void Spawn()
         {
@@ -474,16 +519,32 @@ namespace CircleClickingGame
                 MainCircle.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
                 EndCircle.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
                 SliderBall.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
-                Body.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
-                BodyLine.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime) - 0.4;
+                //Body.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
+                //BodyLine.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime) - 0.4;
                 StartCircle.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
+                foreach (Ellipse e in TBody)
+                {
+                    e.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
+                }
+                foreach (Ellipse e in TBodyLine)
+                {
+                    e.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
+                }
                 await Task.Delay(1);
             }
             fadeoutsw.Stop();
-            Engine.MainWindow.PlayArea.Children.Remove(BodyLine);
+            foreach (Ellipse e in TBody)
+            {
+                Engine.MainWindow.PlayArea.Children.Remove(e);
+            }
+            foreach (Ellipse e in TBodyLine)
+            {
+                Engine.MainWindow.PlayArea.Children.Remove(e);
+            }
+            //Engine.MainWindow.PlayArea.Children.Remove(BodyLine);
             Engine.MainWindow.PlayArea.Children.Remove(MainCircle);
             Engine.MainWindow.PlayArea.Children.Remove(SliderBall);
-            Engine.MainWindow.PlayArea.Children.Remove(Body);
+            //Engine.MainWindow.PlayArea.Children.Remove(Body);
             Engine.MainWindow.PlayArea.Children.Remove(StartCircle);
             Engine.MainWindow.PlayArea.Children.Remove(EndCircle);
             
@@ -495,12 +556,21 @@ namespace CircleClickingGame
             {
                 if (sw.ElapsedMilliseconds < FadeIn)
                 {
-                    EndCircle.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
-                    MainCircle.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
-                    ApproachCircle.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
-                    Body.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
-                    BodyLine.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
-                    StartCircle.Opacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
+                    double newOpacity = (double)(sw.ElapsedMilliseconds / (double)(FadeIn));
+                    foreach (Ellipse e in TBody)
+                    {
+                        e.Opacity = newOpacity;
+                    }
+                    foreach (Ellipse e in TBodyLine)
+                    {
+                        e.Opacity = newOpacity;
+                    }
+                    EndCircle.Opacity = newOpacity;
+                    MainCircle.Opacity = newOpacity;
+                    ApproachCircle.Opacity = newOpacity;
+                    //Body.Opacity = newOpacity;
+                    //BodyLine.Opacity = newOpacity;
+                    StartCircle.Opacity = newOpacity;
                 }
 
                 ApproachCircle.Height = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
