@@ -22,17 +22,31 @@ namespace CircleClickingGame
     public partial class SettingsWindow : Window
     {
         int isReadingKey = 0;
+        WindowState SwitchTo = Engine.MainWindow.WindowState;
         public SettingsWindow()
         {
             InitializeComponent();
             btn1.Content = Engine.key1.ToString();
             btn2.Content = Engine.key2.ToString();
             KeyDown += SettingsWindow_KeyDown;
+            Closing += SettingsWindow_Closing;
             if(Engine.OsuSongsPath != string.Empty)
             {
                 pathfilebox.Content = Engine.OsuSongsPath;
             }
+            if(SwitchTo == WindowState.Normal)
+            {
+                ResolutionButton.Content = "Switch to Fullscreen";
+            }
+            else
+            {
+                ResolutionButton.Content = "Switch to Borderless";
+            }
+        }
 
+        private void SettingsWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Engine.MainWindow.WindowState = SwitchTo;
         }
 
         private void SettingsWindow_KeyDown(object sender, KeyEventArgs e)
@@ -88,7 +102,7 @@ namespace CircleClickingGame
                 string p = openFileDialog.FileName;
                 
                 string toremove = p.Split(@"\")[p.Split(@"\").Count() - 2] + @"\" + p.Split(@"\").Last();
-                MessageBox.Show(toremove);
+               // MessageBox.Show(toremove);
 
                 Engine.OsuSongsPath = p.Replace(toremove, "");
             }
@@ -131,6 +145,20 @@ namespace CircleClickingGame
             Engine.DefaultSave();
             Engine.TryLoadSettings();
             this.Close();
+        }
+
+        private void ResolutionButton_Click(object sender, RoutedEventArgs e)
+        {
+            if(SwitchTo == WindowState.Normal)
+            { 
+                SwitchTo = WindowState.Maximized;
+                ResolutionButton.Content = "Switch to Borderless";
+            }
+            else
+            {
+                SwitchTo = WindowState.Normal;
+                ResolutionButton.Content = "Switch to Fullscreen";
+            }
         }
     }
 }

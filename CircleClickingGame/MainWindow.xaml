@@ -5,33 +5,40 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CircleClickingGame"
         mc:Ignorable="d"
-        ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="720" Width="1280">
+        Title="MainWindow" Height="720" Width="1280"
+        ResizeMode="NoResize"
+        WindowStyle="None">
+    <Window.DataContext>
+        <local:Engine/>
+    </Window.DataContext>
     <Canvas Background="Black" x:Name="MainCanvas">
+        <Canvas x:Name="PlayArea" Height="480" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="320" Canvas.Top="112">
 
-
-        <Canvas x:Name="PlayArea" Height="480" Width="640" HorizontalAlignment="Center" VerticalAlignment="Top" Canvas.Left="320" Canvas.Top="112">
-
-
-            <Grid/>
         </Canvas>
-        <Button x:Name="BeatmapButton" Content="SELECT BEATMAP" Click="BeatMap_Click" HorizontalAlignment="Center" Canvas.Left="1003" Canvas.Top="11" VerticalAlignment="Top" Background="#FFFFA9F5" FontFamily="Broadway" Height="28" Width="222" FontSize="20"/>
-        <Button x:Name="StartButton" Content="START" Canvas.Left="563" Canvas.Top="324" Click="Button_Click_1" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Elephant" Foreground="White" Height="56" Width="154" FontSize="24">
-            <Button.Background>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="#FFFF96EB"/>
-                    <GradientStop Color="#FF7A77FF" Offset="1"/>
-                </LinearGradientBrush>
-            </Button.Background>
-        </Button>
-        <Label x:Name="label1" Content="No beatmap loaded" HorizontalAlignment="Left" Canvas.Left="263" Canvas.Top="10" VerticalAlignment="Center" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="754"/>
-        <Button x:Name="PauseButton" Content="STOP" Canvas.Left="1027" Canvas.Top="331" Height="43" Width="174" HorizontalAlignment="Left" VerticalAlignment="Top" Background="Red" Foreground="White" FontFamily="Elephant" FontSize="24" Click="Button_Click_2"/>
-        <Label x:Name="StatsLabel" Content="No map info available" Canvas.Left="30" Canvas.Top="9" Height="187" Width="233" Foreground="White" FontSize="24" FontFamily="Gill Sans MT" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Label x:Name="ComboLabel" Content="" Canvas.Left="320" Canvas.Top="597" Height="60" Width="232" HorizontalAlignment="Left" VerticalAlignment="Center" Foreground="White" FontSize="36" VerticalContentAlignment="Center" FontFamily="Gill Sans MT"/>
-        <Label x:Name="AccuracyLabel" Content="" Canvas.Left="727" Canvas.Top="602" Height="50" Width="233" Foreground="White" FontSize="36" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Top" FontFamily="Gill Sans MT" HorizontalContentAlignment="Right"/>
-        <Label x:Name="ScoreLabel" Content="" Canvas.Left="524" Canvas.Top="36" Height="50" Width="233" Foreground="White" FontSize="22" VerticalContentAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="Gill Sans MT" HorizontalContentAlignment="Center"/>
-        <Button x:Name="SettingsButton" Content="O" Click="SettingsButton_Click" Canvas.Left="1236" Canvas.Top="16" Background="#FF979797" FontFamily="Broadway" Height="18" Width="25" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label x:Name="label1" Content="No beatmap loaded" HorizontalAlignment="Left" Canvas.Left="271" Canvas.Top="11" VerticalAlignment="Top" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="738"/>
+
+        <Label x:Name="StatsLabel" Content="No map info available" Canvas.Left="10" Canvas.Top="10" Height="242" Width="253" Foreground="White" FontSize="24" FontFamily="Gill Sans MT" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+
+        <Canvas x:Name="ButtonCanvas" Height="720" Width="1280" Style="{StaticResource SpaceCrusadersStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible">
+            <Button x:Name="SettingsButton" Content="O" Click="SettingsButton_Click" Canvas.Left="1235" Canvas.Top="8" Background="#FF979797" Height="35" Width="35" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Button x:Name="PauseButton" Content="ABORT" Canvas.Left="1104" Canvas.Top="634" Height="49" Width="166" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{x:Null}" Foreground="Red" FontSize="28" Click="Button_Click_2" BorderBrush="{x:Null}"/>
+            <Button x:Name="BeatmapButton" Content="SELECT BEATMAP" Click="BeatMap_Click" HorizontalAlignment="Left" Canvas.Left="983" Canvas.Top="8" VerticalAlignment="Center" Background="#FFFFA9F5" Height="35" Width="247" FontSize="20"/>
+            <Button Background="{DynamicResource GradientPinkPurple}" x:Name="StartButton" Content="START" Canvas.Left="563" Canvas.Top="324" Click="Button_Click_1" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Black" Height="56" Width="154" FontSize="24"/>
+        </Canvas>
         <Label x:Name="VolumeLabel" Content="" Canvas.Left="579" Canvas.Top="611" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="122" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"/>
+        <Canvas x:Name="PlayerCanvas" Height="720" Width="1280" Visibility="{Binding Path=player.StatsVisibility, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource LCDStyle}" HorizontalAlignment="Center" VerticalAlignment="Top">
+            <Label x:Name="ComboLabel" Content="{Binding Path=player.Combo, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Left="53" Canvas.Top="616" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="55" VerticalContentAlignment="Center"/>
+            <Label x:Name="AccuracyLabel" Content="{Binding Path=player.Accuracy, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Right="10" Canvas.Top="71" Foreground="White" FontSize="55" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Right"/>
+            <Label x:Name="ScoreLabel" Content="{Binding Path=player.Score, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }" Canvas.Right="10" Foreground="White" FontSize="50" VerticalContentAlignment="Bottom" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Right"/>
+            <Label x:Name="Key1Label" Content="" Canvas.Left="1194" Canvas.Top="218" HorizontalAlignment="Center" VerticalAlignment="Top" Width="60" Height="59" />
+            <Label x:Name="Key2Label" Content="" Canvas.Left="1194" Canvas.Top="285" HorizontalAlignment="Center" VerticalAlignment="Top" Width="60" Height="59" />
+            <Label x:Name="MKey1Label" Content="" Canvas.Left="1194" Canvas.Top="352" Width="60" Height="59" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            <Label x:Name="MKey2Label" Content="" Canvas.Left="1194" Canvas.Top="419" Width="60" Height="59" HorizontalAlignment="Center" VerticalAlignment="Top" />
+            <Label x:Name="HPBar" Height="20" Width="{Binding Path=player.HPWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Top="700" HorizontalAlignment="Left" VerticalAlignment="Center" Background="Red"/>
+            <Label x:Name="TimeProgress" Height="10" Width="{Binding Path=player.TimeLineWidth, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Left="0" Canvas.Top="0" Background="Green" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Label x:Name="ComboLabelX" Content="x" Canvas.Left="36" Canvas.Top="638" Foreground="White" FontSize="28" VerticalContentAlignment="Center" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        </Canvas>
+
     </Canvas>
 </Window>

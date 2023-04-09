@@ -7,25 +7,26 @@
         mc:Ignorable="d"
         Title="ScoreWindow" Height="400" Width="400" ResizeMode="NoResize"
         WindowStartupLocation="CenterScreen">
-    <Canvas>
+    <Canvas Style="{StaticResource SpaceCrusadersStyle}">
         <Canvas.Background>
             <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
                 <GradientStop Color="Black"/>
                 <GradientStop Color="#FF7E004A" Offset="1"/>
             </LinearGradientBrush>
         </Canvas.Background>
-        <Label x:Name="Combobox" Content="COMBO" Canvas.Left="28" Canvas.Top="298" HorizontalAlignment="Center" VerticalAlignment="Top" Width="166" Foreground="White" FontSize="36"/>
+        <Label x:Name="Combobox" Content="MAX COMBO:" Canvas.Left="7" Canvas.Top="295" HorizontalAlignment="Left" VerticalAlignment="Center" Width="242" Foreground="White" FontSize="20" Height="58" VerticalContentAlignment="Center"/>
         <Label x:Name="MapNamebox" Content="MAP NAME" Canvas.Left="7" Canvas.Top="10" Width="383" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Center" Height="24"/>
-        <Label x:Name="X100sbox" Content="100s" Canvas.Left="28" Canvas.Top="143" Width="166" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="#FF47FF39" HorizontalContentAlignment="Right" FontSize="22"/>
-        <Label x:Name="X300sbox" Content="300S" Canvas.Left="28" Canvas.Top="82" Width="166" Foreground="#FF4EECFF" HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Right" FontSize="22"/>
-        <Label x:Name="X50sbox" Content="50S" Canvas.Left="28" Canvas.Top="196" Width="166" Foreground="#FFF5FF3D" HorizontalAlignment="Center" VerticalAlignment="Top" HorizontalContentAlignment="Right" FontSize="22"/>
-        <Label x:Name="Missesbox" Content="MISSES" Canvas.Left="28" Canvas.Top="251" Width="166" Foreground="#FFFF4545" HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Right" FontSize="22"/>
-        <Label x:Name="Accuracybox" Content="Accuracy: 92.41%" Canvas.Left="208" Canvas.Top="310" Width="166" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" HorizontalContentAlignment="Right"/>
-        <Image Height="32" Canvas.Left="215" Source="/Images/hit50.png" Stretch="Fill" Canvas.Top="200" Width="32" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Image Height="32" Canvas.Left="215" Source="/Images/hit100.png" Stretch="Fill" Canvas.Top="147" Width="32" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Image Height="32" Canvas.Left="215" Source="/Images/miss.png" Stretch="Fill" Canvas.Top="255" Width="32" RenderTransformOrigin="0.099,0.047" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Image Height="91" Canvas.Left="186" Source="/Images/cursor.png" Stretch="Fill" Canvas.Top="56" Width="90" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Label x:Name="X100sbox" Content="100s" Canvas.Left="-29" Canvas.Top="140" Width="166" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="#FF47FF39" HorizontalContentAlignment="Right" FontSize="22"/>
+        <Label x:Name="X300sbox" Content="300S" Canvas.Left="-29" Canvas.Top="82" Width="166" Foreground="#FF4EECFF" HorizontalAlignment="Left" VerticalAlignment="Center" HorizontalContentAlignment="Right" FontSize="22"/>
+        <Label x:Name="X50sbox" Content="50S" Canvas.Left="-29" Canvas.Top="192" Width="166" Foreground="#FFF5FF3D" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Right" FontSize="22"/>
+        <Label x:Name="Missesbox" Content="MISSES" Canvas.Left="-29" Canvas.Top="248" Width="166" Foreground="#FFFF4545" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Right" FontSize="22"/>
+        <Label x:Name="Accuracybox" Content="Accuracy: 92.41%" Canvas.Left="214" Canvas.Top="313" Width="166" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" HorizontalContentAlignment="Right"/>
+        <Image Height="32" Canvas.Left="171" Source="/Images/hit50.png" Stretch="Fill" Canvas.Top="199" Width="32" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+        <Image Height="32" Canvas.Left="171" Source="/Images/hit100.png" Stretch="Fill" Canvas.Top="147" Width="32" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+        <Image Height="32" Canvas.Left="171" Source="/Images/miss.png" Stretch="Fill" Canvas.Top="255" Width="32" RenderTransformOrigin="0.099,0.047" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <Image Height="91" Canvas.Left="142" Source="/Images/cursor.png" Stretch="Fill" Canvas.Top="56" Width="90" HorizontalAlignment="Left" VerticalAlignment="Center"/>
         <Label x:Name="ScoreBox" Content="PLAYER SCORE" Canvas.Left="7" Canvas.Top="32" Width="383" Foreground="White" HorizontalContentAlignment="Center" Height="30" HorizontalAlignment="Center" VerticalAlignment="Top" FontSize="14" FontWeight="Bold" FontStyle="Italic"/>
+        <Label x:Name="ResultScore" Content="F" Canvas.Left="232" Canvas.Top="61" Width="220" Foreground="White" FontSize="180" HorizontalAlignment="Left" Height="231" VerticalContentAlignment="Center" VerticalAlignment="Top"/>
 
     </Canvas>
 </Window>

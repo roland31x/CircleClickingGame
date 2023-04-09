@@ -8,14 +8,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\DS-DIGII.TTF" />
+    <None Remove="Assets\Space Crusaders Italic.ttf" />
     <None Remove="Images\cursor.png" />
     <None Remove="Images\hit100.png" />
     <None Remove="Images\hit50.png" />
     <None Remove="Images\hitcircle.png" />
     <None Remove="Images\miss.png" />
+    <None Remove="Images\MyCursor.cur" />
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\DS-DIGII.TTF">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Space Crusaders Italic.ttf" />
     <Resource Include="Images\cursor.png" />
     <Resource Include="Images\hit100.png" />
     <Resource Include="Images\hit50.png" />
@@ -24,6 +31,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="Assets\RedCursor.cur">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Beatmaps\Medium\Rameses B - Flaklypa %28-kevincela-%29 [Hard].osu">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -60,13 +70,12 @@
     <None Update="Beatmaps\Hard\dj TAKA - quaver %28Sotarks%29 [Reform%27s Insane].osu">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="User\uselessfornow.txt">
+    <None Update="User\RedCursor.cur">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="User\" />
+    <None Update="User\uselessfornow.txt">
+      <CopyToOutputDirectory>"</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

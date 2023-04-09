@@ -4,6 +4,35 @@
              xmlns:local="clr-namespace:CircleClickingGame"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <LinearGradientBrush x:Key="GradientPinkPurple" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#FFFF96EB"/>
+            <GradientStop Color="#FF7A77FF" Offset="1"/>
+        </LinearGradientBrush>
+        <SolidColorBrush x:Key="NicePurple" Color="#FF7A77FF"></SolidColorBrush>
+        <FontFamily x:Key="DigiLCD">/CircleClickingGame;component/Assets/DS-DIGII.ttf#DS-Digital</FontFamily>
+        <FontFamily x:Key="SpaceCrusaders">/CircleClickingGame;component/Assets/Space Crusaders Italic.ttf#Space Crusaders</FontFamily>
+        <Style x:Key="LCDStyle" TargetType="Canvas">
+            <Style.Resources>
+                <Style TargetType="Label">
+                    <Setter Property="FontFamily" Value="{StaticResource DigiLCD}"/>
+                </Style>
+            </Style.Resources>
+        </Style>
+        <Style x:Key="SpaceCrusadersStyle" TargetType="Canvas">
+            <Style.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="FontFamily" Value="{StaticResource SpaceCrusaders}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Cursor" Value="Hand"></Setter>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="Label">
+                    <Setter Property="FontFamily" Value="{StaticResource SpaceCrusaders}"/>
+                </Style>
+            </Style.Resources>
+        </Style>
     </Application.Resources>
 </Application>
