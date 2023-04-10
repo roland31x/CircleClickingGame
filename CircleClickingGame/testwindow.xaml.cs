@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Numerics;
 using System.Security.Cryptography;
@@ -84,8 +85,8 @@ namespace CircleClickingGame
                 }
                 for (int i = c; i < curvepts.Length; i++)
                 {
-                    double xc = double.Parse(curvepts[i].Split(':')[0].Trim());
-                    double yc = double.Parse(curvepts[i].Split(':')[1].Trim());
+                    double xc = double.Parse(curvepts[i].Split(':')[0].Trim(), CultureInfo.InvariantCulture);
+                    double yc = double.Parse(curvepts[i].Split(':')[1].Trim(), CultureInfo.InvariantCulture);
                     Point toAdd = new Point(xc, yc);
 
                     if(Last != null && toAdd == Last)

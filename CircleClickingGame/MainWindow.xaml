@@ -13,7 +13,7 @@
         <local:Engine/>
     </Window.DataContext>
     <Canvas Background="Black" x:Name="MainCanvas">
-        <Canvas x:Name="PlayArea" Height="480" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="320" Canvas.Top="112">
+        <Canvas x:Name="PlayArea" Height="480" Width="640" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="320" Canvas.Top="112" Background="Black">
 
         </Canvas>
         <Label x:Name="label1" Content="No beatmap loaded" HorizontalAlignment="Left" Canvas.Left="271" Canvas.Top="11" VerticalAlignment="Top" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="738"/>

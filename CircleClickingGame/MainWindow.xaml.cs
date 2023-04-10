@@ -38,7 +38,7 @@ namespace CircleClickingGame
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             double Scale = ActualWidth / ButtonCanvas.Width;
-            PlayArea.Background = Brushes.Beige;
+            //PlayArea.Background = Brushes.Beige;
             PlayArea.Height = 0.8 * ActualHeight;
             PlayArea.Width = (4d / 3d) * PlayArea.Height;
             Canvas.SetTop(PlayArea, (ActualHeight - PlayArea.Height) / 2);
