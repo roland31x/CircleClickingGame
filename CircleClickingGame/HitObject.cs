@@ -16,43 +16,56 @@ using System.Threading;
 
 namespace CircleClickingGame
 {
-    public class HitObjectEvent
+    public interface IGameEvent
+    {
+        int Time { get; }
+
+        public void StartEvent();
+    }
+    public class HitObjectEvent : IGameEvent
     {
         public static double ScaleMultiplier { get { return Engine.ScaleMultiplier; } }
-        Point coords { get; }
         public int Time { get; }
         int Type { get; }
-        string[] Props { get; }
+        double Xpos { get; }
+        double Ypos { get; }
+        string[] Props { get; } 
         public HitObjectEvent(int x, int y, int time, int type, string[] pars)
         {
-            coords = new Point(x * ScaleMultiplier, y * ScaleMultiplier);
             Time = time;
             Type = type;
             Props = pars;
+            Xpos = x * Engine.ScaleMultiplier;
+            Ypos = y * Engine.ScaleMultiplier;
         }
-        public void Spawn()
+        public Clickable Create(double x, double y, string[] Props)
         {
             if ((Type & 1) > 0)
             {
-                new ClickableCircle((int)coords.X, (int)coords.Y).Spawn();
+                return new ClickableCircle(x, y);
             }
-            else if ((Type & 2) > 0) 
+            else if ((Type & 2) > 0)
             {
-                new ClickableSlider((int)coords.X, (int)coords.Y, Props).Spawn();
+                return new ClickableSlider(x, y, Props);
             }
+            else return new ClickableCircle(x, y);
+        }
+        public void StartEvent()
+        {
+            Create(Xpos,Ypos,Props).Spawn();
         }
     }
-    public class BreakEvent
+    public class BreakEvent : IGameEvent
     {
-        public int StartTime { get; set; }
+        public int Time { get; set; }
         int EndTime { get; set; }
         DispatcherTimer Timer { get; set; }
         public BreakEvent(int start, int end)
         {
-            StartTime = start;
+            Time = start;
             EndTime = end;
             Timer = new DispatcherTimer();
-            Timer.Interval = TimeSpan.FromMilliseconds(EndTime - StartTime);
+            Timer.Interval = TimeSpan.FromMilliseconds(EndTime - Time);
             Timer.Tick += Timer_Tick;
         }
 
@@ -62,13 +75,13 @@ namespace CircleClickingGame
             Timer.Stop();
         }
 
-        public void Start()
+        public void StartEvent()
         {
             Engine.Timer.Stop();
             Timer.Start();
         }
     }
-    public class TimingPoint
+    public class TimingPoint : IGameEvent
     {
         public int Time { get; }
         public int Inherited { get; }
@@ -80,7 +93,7 @@ namespace CircleClickingGame
             Inherited = inherited;
             BeatLength = beatLength;
         }
-        public void Set()
+        public void StartEvent()
         {
             if(BeatLength >= 0)
             {
@@ -96,6 +109,13 @@ namespace CircleClickingGame
     
     public abstract class Clickable
     {
+        protected static double Preempt { get { return Engine.Preempt; } }
+        protected static double FadeIn { get { return Engine.FadeIn; } }
+        protected static double FadeOutTime { get { return Engine.FadeOutTime; } }
+        protected static double HitWindow50 { get { return Engine.HitWindow50; } }
+        protected static double HitWindow100 { get { return Engine.HitWindow100; } }
+        protected static double HitWindow300 { get { return Engine.HitWindow300; } }
+
         public int Score { get; protected set; }
         public double Xpos { get; protected set; }
         public double Ypos { get; protected set; }
@@ -104,12 +124,8 @@ namespace CircleClickingGame
         protected Ellipse ApproachCircle { get; set; }
         protected Stopwatch sw { get; set; }
         protected bool isAlive { get; set; }
-        protected static double Preempt { get { return Engine.Preempt; } }
-        protected static double FadeIn { get { return Engine.FadeIn; } }
-        protected static double FadeOutTime { get { return Engine.FadeOutTime; } }
-        protected static double HitWindow50 { get { return Engine.HitWindow50; } }
-        protected static double HitWindow100 { get { return Engine.HitWindow100; } }
-        protected static double HitWindow300 { get { return Engine.HitWindow300; } }
+
         public abstract void Click();
+        public abstract void Spawn();
     }
 }

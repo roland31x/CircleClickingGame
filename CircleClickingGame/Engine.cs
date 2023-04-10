@@ -239,14 +239,14 @@ namespace CircleClickingGame
                     await AbortBeatmap();
                     return;
                 }
-                if (b < BreakEvents.Count && Stopwatch.ElapsedMilliseconds >= BreakEvents[b].StartTime)
+                if (b < BreakEvents.Count && Stopwatch.ElapsedMilliseconds >= BreakEvents[b].Time)
                 {
-                    BreakEvents[b].Start();
+                    BreakEvents[b].StartEvent();
                     b++;
                 }
                 if (k < TimingPoints.Count && Stopwatch.ElapsedMilliseconds >= TimingPoints[k].Time - Preempt)
                 {
-                    TimingPoints[k].Set();
+                    TimingPoints[k].StartEvent();
                     k++;
                 }
                 if (Stopwatch.ElapsedMilliseconds >= HitObjects[j].Time - Preempt)
@@ -255,7 +255,7 @@ namespace CircleClickingGame
                     {
                         Timer.Start();
                     }
-                    HitObjects[j].Spawn();
+                    HitObjects[j].StartEvent();
                     j++;
                 }               
                 else await Task.Delay(1);

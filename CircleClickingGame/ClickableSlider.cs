@@ -21,8 +21,9 @@ namespace CircleClickingGame
 {
     public class ClickableSlider : Clickable
     {
-        static LinearGradientBrush Pinkgr { get { return (LinearGradientBrush)App.Current.FindResource("GradientPinkPurple"); } }
-        static SolidColorBrush PurpleC { get { return (SolidColorBrush)App.Current.FindResource("NicePurple"); } }
+        static LinearGradientBrush Pinkgr = (LinearGradientBrush)App.Current.FindResource("GradientPinkPurple");
+        static LinearGradientBrush BlackGR = (LinearGradientBrush)App.Current.FindResource("BlackGR");
+        static SolidColorBrush PurpleC = (SolidColorBrush)App.Current.FindResource("NicePurple");
         static double Multiplier { get { return Engine.SliderMultiplier; } }
         static double SV { get { return Engine.SliderVelocity; } }
 
@@ -45,7 +46,7 @@ namespace CircleClickingGame
         bool EndWasHit { get; set; }
         bool WasTicked { get; set; }
 
-        public ClickableSlider(int x, int y, string[] props)
+        public ClickableSlider(double x, double y, string[] props)
         {
             Xpos = x;
             Ypos = y;
@@ -74,7 +75,7 @@ namespace CircleClickingGame
                 Fill = Pinkgr,
                 Opacity = 0,
             };
-            Canvas.SetZIndex(StartCircle, 0);
+            Canvas.SetZIndex(StartCircle, -Engine.SpawnedObj);
             Canvas.SetTop(StartCircle, y - MainCircle.Height / 2);
             Canvas.SetLeft(StartCircle, x - MainCircle.Width / 2);
 
@@ -92,7 +93,7 @@ namespace CircleClickingGame
 
             Canvas.SetTop(EndCircle, endYpos - EndCircle.Height / 2);
             Canvas.SetLeft(EndCircle, endXpos - EndCircle.Width / 2);
-            Canvas.SetZIndex(EndCircle, 0);
+            Canvas.SetZIndex(EndCircle, -Engine.SpawnedObj);
             if (Repeat > 1)
             {
                 EndCircle.StrokeThickness = 12;
@@ -142,7 +143,7 @@ namespace CircleClickingGame
             sw = new Stopwatch();
             isAlive = true;
         }
-        void BuildBody(int x, int y, string[] pars)
+        void BuildBody(double x, double y, string[] pars)
         {
             DrawingVisual dw = new DrawingVisual();
             DrawingContext dc = dw.RenderOpen();
@@ -272,7 +273,7 @@ namespace CircleClickingGame
             foreach (LineSegment lineSegment in pathFigure.Segments)
             {
                 Point px = lineSegment.Point;
-                dc.DrawEllipse(Pinkgr, null, new Point(px.X + 200, px.Y + 200), Engine.CS / 2 - 6, Engine.CS / 2 - 6);
+                dc.DrawEllipse(BlackGR, null, new Point(px.X + 200, px.Y + 200), Engine.CS / 2 - 6, Engine.CS / 2 - 6);
             }
             
             PathGeometry pathGeometry = new PathGeometry();
@@ -289,8 +290,9 @@ namespace CircleClickingGame
             rtb.Render(dw);
             rtb.Freeze();
 
-            BodyImg = new Image() { Source = rtb };            
-            Canvas.SetZIndex(BodyImg, -1);
+            BodyImg = new Image() { Source = rtb };       
+            
+            Canvas.SetZIndex(BodyImg, - Engine.SpawnedObj - 1);
             Canvas.SetTop(BodyImg, -200);
             Canvas.SetLeft(BodyImg, -200);
 
@@ -304,7 +306,7 @@ namespace CircleClickingGame
             Engine.MainWindow.PlayArea.Children.Add(ApproachCircle);
             Engine.MainWindow.PlayArea.Children.Add(BodyImg);
         }
-        public async void Spawn()
+        public async override void Spawn()
         {
             SpawnAllObjects();
             Stopwatch lifetime = new Stopwatch();

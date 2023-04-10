@@ -9,6 +9,10 @@
             <GradientStop Color="#FFFF96EB"/>
             <GradientStop Color="#FF7A77FF" Offset="1"/>
         </LinearGradientBrush>
+        <LinearGradientBrush x:Key="BlackGR" EndPoint="0.5,1" StartPoint="0.5,0">
+            <GradientStop Color="#333333" Offset="1"/>
+            <GradientStop Color="Black" Offset="0"/>
+        </LinearGradientBrush>
         <SolidColorBrush x:Key="NicePurple" Color="#FF7A77FF"></SolidColorBrush>
         <FontFamily x:Key="DigiLCD">/CircleClickingGame;component/Assets/DS-DIGII.ttf#DS-Digital</FontFamily>
         <FontFamily x:Key="SpaceCrusaders">/CircleClickingGame;component/Assets/Space Crusaders Italic.ttf#Space Crusaders</FontFamily>
