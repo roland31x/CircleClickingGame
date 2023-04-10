@@ -160,7 +160,7 @@ namespace CircleClickingGame
 
             Stopwatch = new Stopwatch();
             
-            MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
+            //MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
             MainWindow.PauseButton.Visibility = Visibility.Collapsed;
             MediaPlayer = new MediaPlayer();
             player.ReInit(HitObjects.Count);
@@ -186,7 +186,7 @@ namespace CircleClickingGame
             Timer.Tick += Timer_Tick;
             Timer.Interval = TimeSpan.FromMilliseconds(10);
 
-            MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
+            //MainWindow.PlayArea.Background = new SolidColorBrush(Colors.Black);
             MainWindow.PauseButton.Visibility = Visibility.Collapsed;
             MediaPlayer = new MediaPlayer();
             player.ReInit(HitObjects.Count);

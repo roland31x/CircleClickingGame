@@ -81,8 +81,8 @@ namespace CircleClickingGame
                 while (line != null && line != string.Empty)
                 {                 
                     string[] properties = line.Split(',');
-                    int time = (int)(double.Parse(properties[0]));
-                    double beatlen = double.Parse(properties[1]);
+                    int time = (int)(double.Parse(properties[0], CultureInfo.InvariantCulture));
+                    double beatlen = double.Parse(properties[1], CultureInfo.InvariantCulture);
                     int inherit = int.Parse(properties[6]);
                     Engine.TimingPoints.Add(new TimingPoint(time, inherit, beatlen));
                     line = sr.ReadLine();
