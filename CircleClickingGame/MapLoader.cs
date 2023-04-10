@@ -63,6 +63,7 @@ namespace CircleClickingGame
                         pars[2] = properties[7]; // length
                     }
                     Engine.HitObjects.Add(new HitObjectEvent(x, y, time, type, pars));
+
                     line = sr.ReadLine();
                 }
 
@@ -79,12 +80,19 @@ namespace CircleClickingGame
                 }
                 line = sr.ReadLine();
                 while (line != null && line != string.Empty)
-                {                 
+                {              
+                    
                     string[] properties = line.Split(',');
                     int time = (int)(double.Parse(properties[0], CultureInfo.InvariantCulture));
                     double beatlen = double.Parse(properties[1], CultureInfo.InvariantCulture);
                     int inherit = int.Parse(properties[6]);
                     Engine.TimingPoints.Add(new TimingPoint(time, inherit, beatlen));
+
+                    if (Engine.BPM == 0)
+                    {
+                        Engine.BPM = beatlen;
+                    }
+
                     line = sr.ReadLine();
                 } 
 
@@ -117,7 +125,9 @@ namespace CircleClickingGame
                 {
                     int st = int.Parse(line.Split(',')[1]);
                     int fin = int.Parse(line.Split(',')[2]);
+
                     Engine.BreakEvents.Add(new BreakEvent(st, fin));
+
                     line = sr.ReadLine();
                 }
             }

@@ -14,7 +14,7 @@ namespace CircleClickingGame
 {
     public class ClickableCircle : Clickable
     {
-        public ClickableCircle(int x, int y)
+        public ClickableCircle(double x, double y)
         {
             Ellipse MainCircle = new Ellipse()
             {
@@ -27,7 +27,6 @@ namespace CircleClickingGame
                 Tag = this,
             };
             MainCircle.MouseDown += Circle_ClickCheck;
-            Engine.MainWindow.PlayArea.Children.Add(MainCircle);
             Canvas.SetTop(MainCircle, y - MainCircle.Height / 2);
             Canvas.SetLeft(MainCircle, x - MainCircle.Width / 2);
 
@@ -44,7 +43,6 @@ namespace CircleClickingGame
             this.Ypos = y;
             this.MainCircle = MainCircle;
             this.ApproachCircle = circle;
-            Engine.MainWindow.PlayArea.Children.Add(circle);
             Canvas.SetTop(circle, y - circle.Height / 2);
             Canvas.SetLeft(circle, x - circle.Width / 2);
             Canvas.SetZIndex(MainCircle, Engine.HitObjects.Count + 10 - Engine.SpawnedObj);
@@ -54,7 +52,7 @@ namespace CircleClickingGame
             isAlive = true;
         }
 
-        public async void Spawn()
+        public async override void Spawn()
         {
             await CircleLife();
             await CircleAfterLife();
@@ -63,6 +61,8 @@ namespace CircleClickingGame
         async Task CircleLife()
         {
             sw.Start();
+            Engine.MainWindow.PlayArea.Children.Add(MainCircle); 
+            Engine.MainWindow.PlayArea.Children.Add(ApproachCircle);
             while (sw.ElapsedMilliseconds < Preempt && isAlive)
             {
                 if (sw.ElapsedMilliseconds < FadeIn)

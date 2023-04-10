@@ -23,7 +23,8 @@
         <Canvas x:Name="ButtonCanvas" Height="720" Width="1280" Style="{StaticResource SpaceCrusadersStyle}" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="Visible">
             <Button x:Name="SettingsButton" Content="O" Click="SettingsButton_Click" Canvas.Left="1235" Canvas.Top="8" Background="#FF979797" Height="35" Width="35" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center"/>
             <Button x:Name="PauseButton" Content="ABORT" Canvas.Left="1104" Canvas.Top="634" Height="49" Width="166" HorizontalAlignment="Left" VerticalAlignment="Top" Background="{x:Null}" Foreground="Red" FontSize="28" Click="Button_Click_2" BorderBrush="{x:Null}"/>
-            <Button x:Name="BeatmapButton" Content="SELECT BEATMAP" Click="BeatMap_Click" HorizontalAlignment="Left" Canvas.Left="983" Canvas.Top="8" VerticalAlignment="Center" Background="#FFFFA9F5" Height="35" Width="247" FontSize="20"/>
+            <Button x:Name="BeatmapButton" Content="SELECT BEATMAP" Click="BeatMap_Click" HorizontalAlignment="Left" Canvas.Left="983" Canvas.Top="8" VerticalAlignment="Center" Height="35" Width="247" FontSize="20" BorderBrush="Gray" Background="#FFFFA8E8"/>
+
             <Button Background="{DynamicResource GradientPinkPurple}" x:Name="StartButton" Content="START" Canvas.Left="563" Canvas.Top="324" Click="Button_Click_1" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="Black" Height="56" Width="154" FontSize="24"/>
         </Canvas>
         <Label x:Name="VolumeLabel" Content="" Canvas.Left="579" Canvas.Top="611" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Width="122" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="16"/>
