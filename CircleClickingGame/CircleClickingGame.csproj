@@ -16,7 +16,6 @@
     <None Remove="Images\hitcircle.png" />
     <None Remove="Images\miss.png" />
     <None Remove="Images\MyCursor.cur" />
-    <None Remove="Images\sliderstartcircle.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -29,7 +28,6 @@
     <Resource Include="Images\hit50.png" />
     <Resource Include="Images\hitcircle.png" />
     <Resource Include="Images\miss.png" />
-    <Resource Include="Images\sliderstartcircle.png" />
   </ItemGroup>
 
   <ItemGroup>
