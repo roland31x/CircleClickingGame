@@ -57,7 +57,9 @@ namespace CircleClickingGame
             {
                 Height = Engine.CS,
                 Width = Engine.CS,
-                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
+                Stroke = Brushes.Azure,
+                StrokeThickness = 4 * Engine.ScaleMultiplier,
+                Fill = Pinkgr,
                 Opacity = 0,
                 Tag = this,
             };
@@ -68,11 +70,11 @@ namespace CircleClickingGame
 
             StartCircle = new Ellipse()
             {
-                Height = Engine.CS,
-                Width = Engine.CS,
-                Stroke = Brushes.White,
+                Height = Engine.CS + 6 * Engine.ScaleMultiplier,
+                Width = Engine.CS + 6 * Engine.ScaleMultiplier,
+                Stroke = null,
                 StrokeThickness = 6,
-                Fill = Pinkgr,
+                Fill = Brushes.Transparent,
                 Opacity = 0,
             };
             Canvas.SetZIndex(StartCircle, -Engine.SpawnedObj);
@@ -81,11 +83,11 @@ namespace CircleClickingGame
 
             EndCircle = new Ellipse()
             {
-                Height = Engine.CS,
-                Width = Engine.CS,
-                Stroke = Brushes.White,
+                Height = Engine.CS + 6 * Engine.ScaleMultiplier,
+                Width = Engine.CS + 6 * Engine.ScaleMultiplier,
+                Stroke = null,
                 StrokeThickness = 6,
-                Fill = Pinkgr,
+                Fill = Brushes.Transparent,
                 Opacity = 0,
             };
             
@@ -93,10 +95,10 @@ namespace CircleClickingGame
 
             Canvas.SetTop(EndCircle, endYpos - EndCircle.Height / 2);
             Canvas.SetLeft(EndCircle, endXpos - EndCircle.Width / 2);
-            Canvas.SetZIndex(EndCircle, -Engine.SpawnedObj);
+            Canvas.SetZIndex(EndCircle, -Engine.SpawnedObj - 2);
             if (Repeat > 1)
             {
-                EndCircle.StrokeThickness = 12;
+                EndCircle.StrokeThickness = 16 * Engine.ScaleMultiplier;
                 EndCircle.Stroke = new SolidColorBrush(Colors.Red);               
             }
 
@@ -273,7 +275,7 @@ namespace CircleClickingGame
             foreach (LineSegment lineSegment in pathFigure.Segments)
             {
                 Point px = lineSegment.Point;
-                dc.DrawEllipse(BlackGR, null, new Point(px.X + 200, px.Y + 200), Engine.CS / 2 - 6, Engine.CS / 2 - 6);
+                dc.DrawEllipse(BlackGR, null, new Point(px.X + 200, px.Y + 200), Engine.CS / 2 - 3 * Engine.ScaleMultiplier, Engine.CS / 2 - 3 * Engine.ScaleMultiplier);
             }
             
             PathGeometry pathGeometry = new PathGeometry();
@@ -341,14 +343,14 @@ namespace CircleClickingGame
                 {
                     if (i == Repeat)
                     {
-                        StartCircle.Stroke = Brushes.White;
-                        StartCircle.StrokeThickness = 6;
-                        EndCircle.Stroke = Brushes.White;
-                        EndCircle.StrokeThickness = 6;
+                        StartCircle.Stroke = null;
+                        StartCircle.StrokeThickness = 6 * Engine.ScaleMultiplier;
+                        EndCircle.Stroke = null;
+                        EndCircle.StrokeThickness = 6 * Engine.ScaleMultiplier;
                     }
                     else if (i < Repeat - 1)
                     {
-                        StartCircle.StrokeThickness = 12;
+                        StartCircle.StrokeThickness = 16 * Engine.ScaleMultiplier;
                         StartCircle.Stroke = new SolidColorBrush(Colors.Red);
                     }
 
