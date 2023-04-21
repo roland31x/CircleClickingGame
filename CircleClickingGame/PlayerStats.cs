@@ -35,8 +35,30 @@ namespace CircleClickingGame
         public int TotalObj { get; private set; }
         public int MaxCombo { get; private set; }
         MediaPlayer mp { get { return Engine.MediaPlayer; } }
-        public double HPWidth { get { try { return HP / 100 * Engine.MainWindow.Width; } catch (Exception) { return 0; } } private set { _ = value; OnPropertyChanged(); } }
-        public double TimeLineWidth { get { try { return (mp.Position.TotalMilliseconds / (Engine.HitObjects.Last().Time - Engine.Preempt)) * Engine.MainWindow.Width; } catch (Exception) { return 0; } } private set { _ = value; OnPropertyChanged(); } }
+        public double HPWidth { 
+            
+            get
+            {
+                if(HP < 0 || Engine.MainWindow == null)
+                {
+                    return 0;
+                }
+                return HP / 100 * Engine.MainWindow.Width;
+            }
+            private set { _ = value; OnPropertyChanged(); } 
+        }
+
+        public double TimeLineWidth { 
+            get 
+            { 
+                if(mp == null || Engine.HitObjects == null)
+                {
+                    return 0;
+                }
+                return (mp.Position.TotalMilliseconds / (Engine.HitObjects.Last().Time - Engine.Preempt)) * Engine.MainWindow.Width; }
+            private set { _ = value; OnPropertyChanged(); } 
+        }
+
         public bool HasFailed { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
         PlayerStats(int TotalObj)

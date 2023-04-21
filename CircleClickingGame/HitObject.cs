@@ -71,7 +71,10 @@ namespace CircleClickingGame
 
         private void Timer_Tick(object? sender, EventArgs e)
         {
-            Engine.Timer.Start();
+            if(Engine.Stopwatch.ElapsedMilliseconds >= 100)
+            {
+                Engine.Timer.Start();
+            }            
             Timer.Stop();
         }
 
