@@ -318,6 +318,13 @@ namespace CircleClickingGame
 
             lifetime.Start();
             await CircleLife();
+
+            EndCircle.Opacity = 1;
+            MainCircle.Opacity = 1;
+            ApproachCircle.Opacity = 1;
+            StartCircle.Opacity = 1;
+            BodyImg.Opacity = 1;
+
             CircleAfterLife();
             while (lifetime.ElapsedMilliseconds < Preempt)
             {
@@ -516,7 +523,6 @@ namespace CircleClickingGame
                     StartCircle.Opacity = newOpacity;
                     BodyImg.Opacity = newOpacity;
                 }
-
                 ApproachCircle.Height = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
                 ApproachCircle.Width = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
                 Canvas.SetTop(ApproachCircle, Ypos - ApproachCircle.Height / 2);
@@ -545,7 +551,7 @@ namespace CircleClickingGame
             isAlive = false;
 
         }
-        async void ResultCheck()
+        void ResultCheck()
         {
             
             int score = 0;

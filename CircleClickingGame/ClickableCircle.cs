@@ -56,6 +56,10 @@ namespace CircleClickingGame
         {
             await CircleLife();
             await CircleAfterLife();
+
+            MainCircle.Opacity = 1;
+            ApproachCircle.Opacity = 1;
+
             await CheckResult();
         }
         async Task CircleLife()
