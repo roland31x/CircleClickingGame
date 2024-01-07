@@ -45,107 +45,18 @@ namespace CircleClickingGame
         bool WasFollowed { get; set; }
         bool EndWasHit { get; set; }
         bool WasTicked { get; set; }
+        string[] Props { get; set; }
 
         public ClickableSlider(double x, double y, string[] props)
         {
             Xpos = x;
             Ypos = y;
+            Props = props;
             Length = double.Parse(props[2], CultureInfo.InvariantCulture);
             Repeat = double.Parse(props[1], CultureInfo.InvariantCulture);
-
-            MainCircle = new Ellipse()
-            {
-                Height = Engine.CS,
-                Width = Engine.CS,
-                Stroke = Brushes.Azure,
-                StrokeThickness = 4 * Engine.ScaleMultiplier,
-                Fill = Pinkgr,
-                Opacity = 0,
-                Tag = this,
-            };
-            Canvas.SetZIndex(MainCircle, Engine.HitObjects.Count + 10 - Engine.SpawnedObj);
-            MainCircle.MouseDown += Circle_ClickCheck;
-            Canvas.SetTop(MainCircle, y - MainCircle.Height / 2);
-            Canvas.SetLeft(MainCircle, x - MainCircle.Width / 2);
-
-            StartCircle = new Ellipse()
-            {
-                Height = Engine.CS + 6 * Engine.ScaleMultiplier,
-                Width = Engine.CS + 6 * Engine.ScaleMultiplier,
-                Stroke = null,
-                StrokeThickness = 6,
-                Fill = Brushes.Transparent,
-                Opacity = 0,
-            };
-            Canvas.SetZIndex(StartCircle, -Engine.SpawnedObj);
-            Canvas.SetTop(StartCircle, y - MainCircle.Height / 2);
-            Canvas.SetLeft(StartCircle, x - MainCircle.Width / 2);
-
-            EndCircle = new Ellipse()
-            {
-                Height = Engine.CS + 6 * Engine.ScaleMultiplier,
-                Width = Engine.CS + 6 * Engine.ScaleMultiplier,
-                Stroke = null,
-                StrokeThickness = 6,
-                Fill = Brushes.Transparent,
-                Opacity = 0,
-            };
-            
-            BuildBody(x, y, props);
-
-            Canvas.SetTop(EndCircle, endYpos - EndCircle.Height / 2);
-            Canvas.SetLeft(EndCircle, endXpos - EndCircle.Width / 2);
-            Canvas.SetZIndex(EndCircle, -Engine.SpawnedObj - 2);
-            if (Repeat > 1)
-            {
-                EndCircle.StrokeThickness = 16 * Engine.ScaleMultiplier;
-                EndCircle.Stroke = new SolidColorBrush(Colors.Red);               
-            }
-
-            SliderBall = new Ellipse()
-            {
-                Height = Engine.CS - Engine.CS * 0.2,
-                Width = Engine.CS - Engine.CS * 0.2,
-                Stroke = new SolidColorBrush(Colors.White),
-                StrokeThickness = 2,
-                Fill = new SolidColorBrush(Colors.Orange), //new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
-                Opacity = 1,
-            };
-            Canvas.SetLeft(SliderBall, -SliderBall.Width / 2);
-            Canvas.SetTop(SliderBall, -SliderBall.Height / 2);
-            Canvas.SetZIndex(SliderBall, Canvas.GetZIndex(MainCircle) - 1);
-
-            SliderBallHitbox = new Ellipse()
-            {
-                Height = Engine.CS * 2.5,
-                Width = Engine.CS * 2.5,
-                Stroke = Brushes.Azure,
-                StrokeThickness = 5,
-                Fill = new SolidColorBrush(Colors.Transparent),
-                Opacity = 1,
-                Tag = this,
-            };
-            SliderBallHitbox.MouseDown += Circle_ClickCheck;
-            Canvas.SetLeft(SliderBallHitbox, -SliderBallHitbox.Width / 2);
-            Canvas.SetTop(SliderBallHitbox, -SliderBallHitbox.Height / 2);
-            Canvas.SetZIndex(SliderBallHitbox, Canvas.GetZIndex(MainCircle) + 1);
-
-            ApproachCircle = new Ellipse()
-            {
-                Height = Engine.CS * 4,
-                Width = Engine.CS * 4,
-                Stroke = new SolidColorBrush(Colors.Azure),
-                StrokeThickness = 4,
-                Opacity = 0,
-            };
-            Canvas.SetTop(ApproachCircle, y - ApproachCircle.Height / 2);
-            Canvas.SetLeft(ApproachCircle, x - ApproachCircle.Width / 2);
-            Canvas.SetZIndex(ApproachCircle, Canvas.GetZIndex(MainCircle));
-
-            sw = new Stopwatch();
-            isAlive = true;
+           
         }
-        void BuildBody(double x, double y, string[] pars)
+        Task BuildBody(double x, double y, string[] pars)
         {
             DrawingVisual dw = new DrawingVisual();
             DrawingContext dc = dw.RenderOpen();
@@ -298,7 +209,101 @@ namespace CircleClickingGame
             Canvas.SetTop(BodyImg, -200);
             Canvas.SetLeft(BodyImg, -200);
 
+            return Task.CompletedTask;
+        }
+        async Task CreateObject(double x, double y)
+        {
+            MainCircle = new Ellipse()
+            {
+                Height = Engine.CS,
+                Width = Engine.CS,
+                Stroke = Brushes.Azure,
+                StrokeThickness = 4 * Engine.ScaleMultiplier,
+                Fill = Pinkgr,
+                Opacity = 0,
+                Tag = this,
+            };
+            Canvas.SetZIndex(MainCircle, Engine.HitObjects.Count + 10 - Engine.SpawnedObj);
+            MainCircle.MouseDown += Circle_ClickCheck;
+            Canvas.SetTop(MainCircle, y - MainCircle.Height / 2);
+            Canvas.SetLeft(MainCircle, x - MainCircle.Width / 2);
 
+            StartCircle = new Ellipse()
+            {
+                Height = Engine.CS + 6 * Engine.ScaleMultiplier,
+                Width = Engine.CS + 6 * Engine.ScaleMultiplier,
+                Stroke = null,
+                StrokeThickness = 6,
+                Fill = Brushes.Transparent,
+                Opacity = 0,
+            };
+            Canvas.SetZIndex(StartCircle, -Engine.SpawnedObj);
+            Canvas.SetTop(StartCircle, y - MainCircle.Height / 2);
+            Canvas.SetLeft(StartCircle, x - MainCircle.Width / 2);
+
+            EndCircle = new Ellipse()
+            {
+                Height = Engine.CS + 6 * Engine.ScaleMultiplier,
+                Width = Engine.CS + 6 * Engine.ScaleMultiplier,
+                Stroke = null,
+                StrokeThickness = 6,
+                Fill = Brushes.Transparent,
+                Opacity = 0,
+            };
+
+            await BuildBody(Xpos, Ypos, Props);
+
+            Canvas.SetTop(EndCircle, endYpos - EndCircle.Height / 2);
+            Canvas.SetLeft(EndCircle, endXpos - EndCircle.Width / 2);
+            Canvas.SetZIndex(EndCircle, -Engine.SpawnedObj - 2);
+            if (Repeat > 1)
+            {
+                EndCircle.StrokeThickness = 16 * Engine.ScaleMultiplier;
+                EndCircle.Stroke = new SolidColorBrush(Colors.Red);
+            }
+
+            SliderBall = new Ellipse()
+            {
+                Height = Engine.CS - Engine.CS * 0.2,
+                Width = Engine.CS - Engine.CS * 0.2,
+                Stroke = new SolidColorBrush(Colors.White),
+                StrokeThickness = 2,
+                Fill = new SolidColorBrush(Colors.Orange), //new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/Images/hitcircle.png"))),
+                Opacity = 1,
+            };
+            Canvas.SetLeft(SliderBall, -SliderBall.Width / 2);
+            Canvas.SetTop(SliderBall, -SliderBall.Height / 2);
+            Canvas.SetZIndex(SliderBall, Canvas.GetZIndex(MainCircle) - 1);
+
+            SliderBallHitbox = new Ellipse()
+            {
+                Height = Engine.CS * 2.5,
+                Width = Engine.CS * 2.5,
+                Stroke = Brushes.Azure,
+                StrokeThickness = 5,
+                Fill = new SolidColorBrush(Colors.Transparent),
+                Opacity = 1,
+                Tag = this,
+            };
+            SliderBallHitbox.MouseDown += Circle_ClickCheck;
+            Canvas.SetLeft(SliderBallHitbox, -SliderBallHitbox.Width / 2);
+            Canvas.SetTop(SliderBallHitbox, -SliderBallHitbox.Height / 2);
+            Canvas.SetZIndex(SliderBallHitbox, Canvas.GetZIndex(MainCircle) + 1);
+
+            ApproachCircle = new Ellipse()
+            {
+                Height = Engine.CS * 4,
+                Width = Engine.CS * 4,
+                Stroke = new SolidColorBrush(Colors.Azure),
+                StrokeThickness = 4,
+                Opacity = 0,
+            };
+            Canvas.SetTop(ApproachCircle, y - ApproachCircle.Height / 2);
+            Canvas.SetLeft(ApproachCircle, x - ApproachCircle.Width / 2);
+            Canvas.SetZIndex(ApproachCircle, Canvas.GetZIndex(MainCircle));
+
+            sw = new Stopwatch();
+            isAlive = true;
         }
         void SpawnAllObjects()
         {
@@ -310,6 +315,8 @@ namespace CircleClickingGame
         }
         public async override void Spawn()
         {
+            await CreateObject(Xpos,Ypos);
+            
             SpawnAllObjects();
             Stopwatch lifetime = new Stopwatch();
 
@@ -328,7 +335,7 @@ namespace CircleClickingGame
             CircleAfterLife();
             while (lifetime.ElapsedMilliseconds < Preempt)
             {
-                await Task.Delay(1);
+                await Task.Delay(5);
             }
             lifetime.Stop();
             Duration duration = new Duration(TimeSpan.FromMilliseconds((int)dur));
@@ -438,7 +445,7 @@ namespace CircleClickingGame
                 {
                     SliderBallHitbox.Stroke = Brushes.Transparent;
                 }
-                await Task.Delay(1);
+                await Task.Delay(5);
             }
             dispatcherTimer.Stop();
         }
@@ -497,7 +504,7 @@ namespace CircleClickingGame
                 SliderBall.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
                 StartCircle.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
                 BodyImg.Opacity = ((double)(FadeOutTime - fadeoutsw.ElapsedMilliseconds) / (double)FadeOutTime);
-                await Task.Delay(1);
+                await Task.Delay(5);
             }
             fadeoutsw.Stop();
 
@@ -527,7 +534,7 @@ namespace CircleClickingGame
                 ApproachCircle.Width = 3 * Engine.CS * (1 - (double)(sw.ElapsedMilliseconds / (double)Preempt)) + Engine.CS;
                 Canvas.SetTop(ApproachCircle, Ypos - ApproachCircle.Height / 2);
                 Canvas.SetLeft(ApproachCircle, Xpos - ApproachCircle.Width / 2);
-                await Task.Delay(1);
+                await Task.Delay(5);
             }
             Engine.MainWindow.PlayArea.Children.Remove(ApproachCircle);
             sw.Stop();
@@ -539,7 +546,7 @@ namespace CircleClickingGame
             {
                 while (sw.ElapsedMilliseconds < Preempt + HitWindow50 && isAlive)
                 {
-                    await Task.Delay(1);
+                    await Task.Delay(5);
                 }
             }
             sw.Stop();
@@ -617,7 +624,7 @@ namespace CircleClickingGame
             while (sw2.ElapsedMilliseconds <= AnimationLength)
             {
                 result.Opacity = (AnimationLength - sw2.ElapsedMilliseconds) / AnimationLength;
-                await Task.Delay(1);
+                await Task.Delay(5);
             }
             sw2.Stop();
             Engine.MainWindow.PlayArea.Children.Remove(result);

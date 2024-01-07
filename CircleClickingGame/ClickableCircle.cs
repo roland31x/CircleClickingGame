@@ -80,7 +80,7 @@ namespace CircleClickingGame
                 Canvas.SetTop(ApproachCircle, Ypos - ApproachCircle.Height / 2);
                 Canvas.SetLeft(ApproachCircle, Xpos - ApproachCircle.Width / 2);
 
-                await Task.Delay(1);
+                await Task.Delay(5);
             }
             sw.Stop();
             Engine.MainWindow.PlayArea.Children.Remove(ApproachCircle);
@@ -94,7 +94,7 @@ namespace CircleClickingGame
             {
                 while (sw.ElapsedMilliseconds < Preempt + HitWindow50 && isAlive)
                 {
-                    await Task.Delay(1);
+                    await Task.Delay(5);
                 }
             }
             if (isAlive)
@@ -134,7 +134,7 @@ namespace CircleClickingGame
                     Canvas.SetTop(MainCircle, Ypos - MainCircle.Height / 2);
                     Canvas.SetLeft(MainCircle, Xpos - MainCircle.Width / 2);
                     MainCircle.Opacity = ((double)(FadeOutTime - sw.ElapsedMilliseconds) / (double)FadeOutTime);
-                    await Task.Delay(1);
+                    await Task.Delay(5);
                 }
                 sw.Stop();
             }
@@ -159,7 +159,7 @@ namespace CircleClickingGame
             while (sw2.ElapsedMilliseconds <= AnimationLength)
             {
                 result.Opacity = (AnimationLength - sw2.ElapsedMilliseconds) / AnimationLength;
-                await Task.Delay(1);
+                await Task.Delay(5);
             }
             sw2.Stop();
             Engine.MainWindow.PlayArea.Children.Remove(result);
